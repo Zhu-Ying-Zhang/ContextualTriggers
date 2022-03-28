@@ -14,7 +14,3 @@
 .externalNativeBuild
 .cxx
 local.properties
-gradle/*
-gradlew
-gradlew.bat
-gra

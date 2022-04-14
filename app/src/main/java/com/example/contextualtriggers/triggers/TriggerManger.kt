@@ -20,13 +20,15 @@ class TriggerManger constructor(
     fun check() {
         if (noMovementTrigger.isTriggered())
             handleNotification(noMovementTrigger)
-        if (batteryTrigger.isTriggered())
+        if (batteryTrigger.isTriggered()) {
+            Log.i("Battery Trigger", "Start")
             handleNotification(batteryTrigger)
+        }
     }
 
     private fun handleNotification(trigger: Trigger) {
         sendNotification(100,
-            "BatteryTrigger",
+            "Trigger",
             trigger.getNotificationTitle(),
             trigger.getNotificationMessage(),
             trigger.getNotificationIntent()

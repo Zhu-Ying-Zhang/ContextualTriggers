@@ -6,10 +6,8 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import android.util.Log
 import com.example.contextualtriggers.context.ContextHolder
 import com.example.contextualtriggers.triggers.TriggerManger
-import java.time.LocalDateTime
 
 private const val NOTIFICATION_ID = 1001
 private const val NOTIFICATION_CHANNEL_ID = "Channel_Id"
@@ -36,13 +34,16 @@ class ContextUpdateManager: Service() {
     }
 
     private fun startForeground(){
-
         triggerManager.check()
         startForeground(
             NOTIFICATION_ID, sendNotification(
                 "Service is running", "Service enabled"
             ).build()
         )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
     private fun sendNotification(title: String, message: String): Notification.Builder {

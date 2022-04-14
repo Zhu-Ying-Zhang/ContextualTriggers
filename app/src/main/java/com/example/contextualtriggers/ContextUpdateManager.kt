@@ -21,7 +21,7 @@ class ContextUpdateManager: Service() {
 
     override fun onCreate() {
         super.onCreate()
-        contextHolder = ContextHolder()
+        contextHolder = ContextHolder(this)
         triggerManager = TriggerManger(this, contextHolder)
     }
 
@@ -36,29 +36,8 @@ class ContextUpdateManager: Service() {
     }
 
     private fun startForeground(){
-        var count = 0
-        Thread(
-            Runnable {
-                kotlin.run {
-                    while (true) {
-                        count++
-                        if (count % 5 == 0) {
-                            contextHolder?.noMovement = true
-                            if (triggerManager != null) {
-                                triggerManager.check()
-                            }
-                        }
-                        Log.e("Service", "${LocalDateTime.now()} Service is running....")
-                        try {
-                            Thread.sleep(10000)
-                        } catch (e:Exception) {
-                            e.printStackTrace()
-                        }
-                    }
-                }
-            }
-        ).start()
 
+        triggerManager.check()
         startForeground(
             NOTIFICATION_ID, sendNotification(
                 "Service is running", "Service enabled"

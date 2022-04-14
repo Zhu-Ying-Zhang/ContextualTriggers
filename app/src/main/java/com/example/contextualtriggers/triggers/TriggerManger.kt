@@ -15,18 +15,21 @@ class TriggerManger constructor(
 ) {
 
     private val noMovementTrigger = NoMovementTrigger(contextHolder = contextHolder)
+    private val batteryTrigger = BatteryTrigger(contextHolder = contextHolder)
 
     fun check() {
         if (noMovementTrigger.isTriggered())
-            handleNotification()
+            handleNotification(noMovementTrigger)
+        if (batteryTrigger.isTriggered())
+            handleNotification(batteryTrigger)
     }
 
-    private fun handleNotification() {
+    private fun handleNotification(trigger: Trigger) {
         sendNotification(100,
-            "TriggerNoMovement",
-            noMovementTrigger.getNotificationTitle(),
-            noMovementTrigger.getNotificationMessage(),
-            noMovementTrigger.getNotificationIntent()
+            "BatteryTrigger",
+            trigger.getNotificationTitle(),
+            trigger.getNotificationMessage(),
+            trigger.getNotificationIntent()
         )
     }
 

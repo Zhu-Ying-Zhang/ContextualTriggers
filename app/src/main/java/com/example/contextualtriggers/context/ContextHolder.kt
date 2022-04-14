@@ -10,7 +10,7 @@ class ContextHolder constructor(
 ): ContextAPI {
 
     private var context: Context = context
-    var noMovement = false
+    var noMovement = true
 
     override fun noMovement(): Boolean = noMovement
 

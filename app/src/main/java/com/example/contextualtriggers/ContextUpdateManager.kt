@@ -34,7 +34,8 @@ class ContextUpdateManager: Service() {
     }
 
     private fun startForeground(){
-        triggerManager.check()
+        if (triggerManager != null)
+            triggerManager.check()
         startForeground(
             NOTIFICATION_ID, sendNotification(
                 "Service is running", "Service enabled"

@@ -12,5 +12,7 @@ class BootBroadcastReceiver : BroadcastReceiver() {
         val i = Intent(context, MainActivity::class.java)
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(i)
+
+
     }
 }

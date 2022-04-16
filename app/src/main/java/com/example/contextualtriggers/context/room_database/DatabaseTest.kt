@@ -1,6 +1,5 @@
 package com.example.contextualtriggers.context.room_database
 
-import android.os.Parcel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.contextualtriggers.context.Geofence

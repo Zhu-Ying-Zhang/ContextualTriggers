@@ -9,9 +9,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 @Composable
 fun DatabaseCreate(
     viewModel: DatabaseTest = hiltViewModel()
+
 ) {
     Button(
-        onClick = { viewModel.addGeofence() },
+        onClick = { viewModel.addGeofence()
+                 },
     ) {
         Text(text = "Add Geofence")
     }

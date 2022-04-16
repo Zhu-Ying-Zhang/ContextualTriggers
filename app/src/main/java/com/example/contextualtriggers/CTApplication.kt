@@ -1,4 +1,7 @@
 package com.example.contextualtriggers
 
-class CTApplication {
-}
+import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
+
+@HiltAndroidApp
+class CTApplication : Application() {}

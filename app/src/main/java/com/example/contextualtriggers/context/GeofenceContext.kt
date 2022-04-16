@@ -15,8 +15,10 @@ import com.google.android.gms.maps.model.LatLng
 
 class GeofenceContext(base: Context?) : ContextWrapper(base) {
 
-    private lateinit var pendingIntent: PendingIntent
+    private  var pendingIntent: PendingIntent? = null
 
+
+    // var pendingIntent: PendingIntent? = null
 
     fun getGeofencingRequest(geofence: Geofence?): GeofencingRequest {
         return GeofencingRequest.Builder()
@@ -35,7 +37,8 @@ class GeofenceContext(base: Context?) : ContextWrapper(base) {
             .build()
     }
 
-     fun getPendingIntent(): PendingIntent? {
+
+      fun getPendingIntent(): PendingIntent? {
         if (pendingIntent != null) {
             return pendingIntent
         }

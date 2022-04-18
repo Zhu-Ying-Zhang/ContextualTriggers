@@ -1,9 +1,9 @@
-package com.example.contextualtriggers.context.room_database
+package com.example.contextualtriggers.context.room_database.Geofence
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.contextualtriggers.context.Geofence
-import com.example.contextualtriggers.context.use_cases.GeofenceUseCases
+import com.example.contextualtriggers.context.use_cases.Geofence.GeofenceUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

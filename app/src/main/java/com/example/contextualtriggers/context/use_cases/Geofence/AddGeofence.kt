@@ -1,7 +1,7 @@
-package com.example.contextualtriggers.context.use_cases
+package com.example.contextualtriggers.context.use_cases.Geofence
 
 import com.example.contextualtriggers.context.Geofence
-import com.example.contextualtriggers.context.room_database.GeofenceRepository
+import com.example.contextualtriggers.context.room_database.Geofence.GeofenceRepository
 
 class AddGeofence (
     private val repository: GeofenceRepository

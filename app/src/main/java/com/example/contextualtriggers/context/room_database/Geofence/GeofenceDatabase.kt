@@ -1,4 +1,4 @@
-package com.example.contextualtriggers.context.room_database
+package com.example.contextualtriggers.context.room_database.Geofence
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

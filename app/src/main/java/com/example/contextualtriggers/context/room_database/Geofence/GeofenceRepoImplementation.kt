@@ -1,4 +1,4 @@
-package com.example.contextualtriggers.context.room_database
+package com.example.contextualtriggers.context.room_database.Geofence
 
 import com.example.contextualtriggers.context.Geofence
 import kotlinx.coroutines.flow.Flow

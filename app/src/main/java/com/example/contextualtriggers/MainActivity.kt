@@ -3,7 +3,6 @@ package com.example.contextualtriggers
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -14,8 +13,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.contextualtriggers.context.room_database.DatabaseCreate
+import com.example.contextualtriggers.context.room_database.Geofence.DatabaseCreate
 import com.example.contextualtriggers.ui.theme.ContextualTriggersTheme
 import dagger.hilt.android.AndroidEntryPoint
 

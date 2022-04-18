@@ -2,11 +2,11 @@ package com.example.contextualtriggers.di
 
 import android.app.Application
 import androidx.room.Room
-import com.example.contextualtriggers.context.room_database.GeofenceDatabase
-import com.example.contextualtriggers.context.room_database.GeofenceRepoImplementation
-import com.example.contextualtriggers.context.room_database.GeofenceRepository
-import com.example.contextualtriggers.context.use_cases.AddGeofence
-import com.example.contextualtriggers.context.use_cases.GeofenceUseCases
+import com.example.contextualtriggers.context.room_database.Geofence.GeofenceDatabase
+import com.example.contextualtriggers.context.room_database.Geofence.GeofenceRepoImplementation
+import com.example.contextualtriggers.context.room_database.Geofence.GeofenceRepository
+import com.example.contextualtriggers.context.use_cases.Geofence.AddGeofence
+import com.example.contextualtriggers.context.use_cases.Geofence.GeofenceUseCases
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

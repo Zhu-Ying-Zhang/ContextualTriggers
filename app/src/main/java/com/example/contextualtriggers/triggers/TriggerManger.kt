@@ -6,6 +6,7 @@ import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.example.contextualtriggers.Notification
 import com.example.contextualtriggers.R
 import com.example.contextualtriggers.context.ContextHolder
 
@@ -19,37 +20,6 @@ class TriggerManger constructor(
 
     fun check() {
         if (noMovementTrigger.isTriggered())
-            handleNotification(noMovementTrigger)
-//        if (batteryTrigger.isTriggered()) {
-//            Log.i("Battery Trigger", "Start")
-//            handleNotification(batteryTrigger)
-//        }
-    }
-
-    private fun handleNotification(trigger: Trigger) {
-        sendNotification(100,
-            "Trigger",
-            trigger.getNotificationTitle(),
-            trigger.getNotificationMessage(),
-            trigger.getNotificationIntent()
-        )
-    }
-
-    // TODO: Paste notification part into this place.
-    private fun sendNotification(id: Int, channelId: String, title: String, message: String, intent: Intent?) {
-        var notification: NotificationCompat.Builder =
-            NotificationCompat.Builder(context, channelId)
-                .setContentTitle(title)
-                .setContentText(message)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-
-//        if (intent != null) {
-//            notification.setContentIntent(PendingIntent.getActivity(context, 0, intent, 0))
-//        }
-
-        val notify: NotificationManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-
-        Log.d("TManager", "Notification Sent")
-        notify.notify(id, notification.build())
+            Notification(context).handleNotification(noMovementTrigger)
     }
 }

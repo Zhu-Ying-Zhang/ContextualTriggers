@@ -1,6 +1,10 @@
 package com.example.contextualtriggers
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.os.BatteryManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -22,6 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 
 class MainActivity : ComponentActivity() {
+    private var batteryTrigger = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("ContextTriggers", "Application started")
@@ -67,4 +72,25 @@ class MainActivity : ComponentActivity() {
         startActivity(mapActivity)
     }
 
+    override fun onResume() {
+        super.onResume()
+        registerReceiver(getBatteryLevel, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+    }
+
+    private val getBatteryLevel: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
+            if (level >= 60) {
+                if (!batteryTrigger) {
+                    Log.d("Battery Level", level.toString())
+                    Notification(context).handleNotification(
+                        "Battery Status",
+                        "You have a lot of battery left, you can go for a walk!"
+                    )
+                    batteryTrigger = true
+                }
+            } else
+                batteryTrigger = false
+        }
+    }
 }

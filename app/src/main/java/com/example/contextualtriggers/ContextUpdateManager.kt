@@ -43,10 +43,6 @@ class ContextUpdateManager: Service() {
         )
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
     private fun sendNotification(title: String, message: String): Notification.Builder {
         val notificationChannel =
             NotificationChannel(

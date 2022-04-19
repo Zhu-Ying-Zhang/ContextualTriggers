@@ -16,7 +16,6 @@ class TriggerManger constructor(
 ) {
 
     private val noMovementTrigger = NoMovementTrigger(contextHolder = contextHolder)
-    private val batteryTrigger = BatteryTrigger(contextHolder = contextHolder)
 
     fun check() {
         if (noMovementTrigger.isTriggered())

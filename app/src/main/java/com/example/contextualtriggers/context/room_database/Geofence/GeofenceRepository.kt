@@ -1,4 +1,4 @@
-package com.example.contextualtriggers.context.room_database
+package com.example.contextualtriggers.context.room_database.Geofence
 
 import com.example.contextualtriggers.context.Geofence
 import kotlinx.coroutines.flow.Flow
@@ -7,7 +7,7 @@ interface GeofenceRepository {
 
     fun getGeofences(): Flow<List<Geofence>>
 
-    suspend fun getGeofenceById(id: Int): Geofence?
+    suspend fun getGeofenceByName(name: String): Geofence?
 
     suspend fun insertGeofence(geofence: Geofence)
 

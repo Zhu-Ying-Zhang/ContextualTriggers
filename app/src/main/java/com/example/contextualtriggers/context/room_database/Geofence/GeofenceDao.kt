@@ -1,4 +1,4 @@
-package com.example.contextualtriggers.context.room_database
+package com.example.contextualtriggers.context.room_database.Geofence
 
 import androidx.room.*
 import com.example.contextualtriggers.context.Geofence
@@ -10,8 +10,8 @@ interface GeofenceDao {
     @Query("SELECT * FROM geofence_tbl")
     fun getGeofences(): Flow<List<Geofence>>
 
-    @Query("SELECT * FROM geofence_tbl WHERE id = :id")
-    suspend fun getGeofenceById(id: Int): Geofence?
+    @Query("SELECT * FROM geofence_tbl WHERE name = :name")
+    suspend fun getGeofenceByName(name: String): Geofence?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGeofence(geofence: Geofence)

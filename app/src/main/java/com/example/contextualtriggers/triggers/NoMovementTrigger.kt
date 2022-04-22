@@ -14,5 +14,5 @@ class NoMovementTrigger constructor(private val contextHolder: ContextAPI): Trig
 
     override fun getNotificationIntent(): Intent? = null
 
-    override fun isTriggered(): Boolean = contextHolder.noMovement()
+    override suspend fun isTriggered(): Boolean = contextHolder.noMovement()
 }

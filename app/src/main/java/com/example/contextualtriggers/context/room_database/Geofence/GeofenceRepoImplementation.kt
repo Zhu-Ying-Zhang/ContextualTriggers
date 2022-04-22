@@ -1,4 +1,4 @@
-package com.example.contextualtriggers.context.room_database
+package com.example.contextualtriggers.context.room_database.Geofence
 
 import com.example.contextualtriggers.context.Geofence
 import kotlinx.coroutines.flow.Flow
@@ -11,8 +11,8 @@ class GeofenceRepoImplementation (
         return dao.getGeofences()
     }
 
-    override suspend fun getGeofenceById(id: Int): Geofence? {
-        return dao.getGeofenceById(id)
+    override suspend fun getGeofenceByName(name: String): Geofence? {
+        return dao.getGeofenceByName(name)
     }
 
     override suspend fun insertGeofence(geofence: Geofence) {

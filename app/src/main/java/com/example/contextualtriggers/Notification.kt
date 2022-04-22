@@ -44,4 +44,5 @@ class Notification constructor(private val context: Context) {
         Log.d("TManager", "Notification Sent")
         notify.notify(id, notification.build())
     }
+
 }

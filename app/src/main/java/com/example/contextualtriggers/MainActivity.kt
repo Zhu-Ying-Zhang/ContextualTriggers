@@ -1,11 +1,14 @@
 package com.example.contextualtriggers
 
+import android.Manifest.permission.READ_CALENDAR
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.os.BatteryManager
 import android.os.Bundle
+import android.provider.CalendarContract
 import android.util.Log
 import android.view.View
 import androidx.activity.ComponentActivity
@@ -19,17 +22,63 @@ import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.contextualtriggers.context.room_database.DatabaseCreate
 import com.example.contextualtriggers.ui.theme.ContextualTriggersTheme
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.jar.Manifest
 
 @AndroidEntryPoint
 
 class MainActivity : ComponentActivity() {
     private var batteryTrigger = false
+    private val permission: String = android.Manifest.permission.READ_CALENDAR
+    private val requestCode: Int = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("ContextTriggers", "Application started")
+        if (ContextCompat.checkSelfPermission(this, permission)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(this, arrayOf(permission), requestCode)
+        } else {
+            readCalendarEvents()
+        }
+    }
+
+    private fun readCalendarEvents()
+    {
+        val titleCol = CalendarContract.Events.TITLE
+        val startDateCol = CalendarContract.Events.DTSTART
+        val endDateCol = CalendarContract.Events.DTEND
+
+        val projection = arrayOf(titleCol, startDateCol, endDateCol)
+        val selection = CalendarContract.Events.DELETED + " != 1"
+
+        val cursor = contentResolver.query(
+            CalendarContract.Events.CONTENT_URI,
+            projection, selection, null, null
+        )
+
+        val titleColIdx = cursor!!.getColumnIndex(titleCol)
+        val startDateColIdx = cursor.getColumnIndex(startDateCol)
+        val endDateColIdx = cursor.getColumnIndex(endDateCol)
+
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US)
+
+        while (cursor.moveToNext()) {
+            val title = cursor.getString(titleColIdx)
+            val startDate = formatter.format(Date(cursor.getLong(startDateColIdx)))
+            val endDate = formatter.format(Date(cursor.getLong(endDateColIdx)))
+
+            Log.d("Upcoming Events", "$title $startDate $endDate")
+        }
+
+        cursor.close()
+
 
         //This is just a test to create the geofence
          setContent {

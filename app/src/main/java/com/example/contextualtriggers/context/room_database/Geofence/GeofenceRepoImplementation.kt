@@ -11,8 +11,8 @@ class GeofenceRepoImplementation (
         return dao.getGeofences()
     }
 
-    override suspend fun getGeofenceById(id: Int): Geofence? {
-        return dao.getGeofenceById(id)
+    override suspend fun getGeofenceByName(name: String): Geofence? {
+        return dao.getGeofenceByName(name)
     }
 
     override suspend fun insertGeofence(geofence: Geofence) {

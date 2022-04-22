@@ -10,5 +10,5 @@ interface Trigger {
 
     fun getNotificationIntent(): Intent?
 
-    fun isTriggered(): Boolean
+    suspend fun isTriggered(): Boolean
 }

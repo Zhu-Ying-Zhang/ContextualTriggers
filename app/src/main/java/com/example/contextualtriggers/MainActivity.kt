@@ -13,7 +13,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.contextualtriggers.context.room_database.Geofence.DatabaseCreate
 import com.example.contextualtriggers.ui.theme.ContextualTriggersTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -46,7 +45,7 @@ class MainActivity : ComponentActivity() {
                             Text(text = "Add Geofence mainactivity")
                         }
 
-                        DatabaseCreate()
+//                        DatabaseCreate()
                     }
                 }
             }

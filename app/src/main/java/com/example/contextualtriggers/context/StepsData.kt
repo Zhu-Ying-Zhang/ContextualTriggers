@@ -51,7 +51,7 @@ class StepsData : Service(), SensorEventListener {
             if (diff > THRESHOLD) {
                 mTotalStepsSinceBoot = steps
                 val intent = Intent(this, ContextUpdateManager::class.java)
-                intent.putExtra("DataSource", "Steps")
+                intent.putExtra("Data", "Steps")
                 intent.putExtra("Count", diff)
                 startService(intent)
             }
@@ -66,6 +66,6 @@ class StepsData : Service(), SensorEventListener {
         /**
          * The number of steps to be walked for the counter to send an intent.
          */
-        private const val THRESHOLD = 5
+        private const val THRESHOLD = 100
     }
 }

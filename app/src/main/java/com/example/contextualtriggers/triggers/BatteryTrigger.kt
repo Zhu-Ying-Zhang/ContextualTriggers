@@ -17,7 +17,7 @@ class BatteryTrigger constructor(
 
     override fun getNotificationIntent(): Intent? = null
 
-    override fun isTriggered(): Boolean {
+    override suspend fun isTriggered(): Boolean {
         val batteryProportion: Int = contextHolder.getBatteryLevel()
         return batteryProportion >= batteryTarget
     }

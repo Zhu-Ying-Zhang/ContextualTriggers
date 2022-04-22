@@ -7,7 +7,7 @@ interface GeofenceRepository {
 
     fun getGeofences(): Flow<List<Geofence>>
 
-    suspend fun getGeofenceById(id: Int): Geofence?
+    suspend fun getGeofenceByName(name: String): Geofence?
 
     suspend fun insertGeofence(geofence: Geofence)
 

@@ -1,18 +1,14 @@
 package com.example.contextualtriggers.context
 
-import android.os.Parcel
-import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "geofence_tbl")
 class Geofence(
-    val name: String?,
-    val latitude: Double,
-    val longitude: Double,
-
     @PrimaryKey
-    val id: Int? = null,
+    val name: String,
+    val latitude: Double,
+    val longitude: Double
 ) {
 //: Parcelable {
 //

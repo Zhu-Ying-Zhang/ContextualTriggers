@@ -1,39 +1,40 @@
 package com.example.contextualtriggers
 
-import android.Manifest
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
-import android.content.pm.PackageManager
+import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
-import androidx.core.app.ActivityCompat.requestPermissions
-import androidx.core.content.ContextCompat
 import com.example.contextualtriggers.context.ContextHolder
 import com.example.contextualtriggers.context.StepsData
+import com.example.contextualtriggers.context.use_cases.Geofence.GeofenceUseCases
+import com.example.contextualtriggers.context.use_cases.Steps.StepsUseCases
 import com.example.contextualtriggers.triggers.TriggerManger
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 private const val NOTIFICATION_ID = 1001
 private const val NOTIFICATION_CHANNEL_ID = "Channel_Id"
 
-class ContextUpdateManager: Service() {
+class ContextUpdateManager(): Service() {
+
+    @Inject
+    lateinit var stepsUseCases: StepsUseCases
+    @Inject
+    lateinit var geofenceUseCases: GeofenceUseCases
 
     private lateinit var contextHolder: ContextHolder
     private lateinit var triggerManager: TriggerManger
 
     override fun onCreate() {
-        Log.e("ContextTrigger", "Creating context manager...")
+        Log.d("ContextTrigger", "Creating context manager...")
         super.onCreate()
-        contextHolder = ContextHolder(this)
+        contextHolder = ContextHolder(this, geofenceUseCases, stepsUseCases)
         triggerManager = TriggerManger(this, contextHolder)
-//        if(ContextCompat.checkSelfPermission(
-//            this,
-//            Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED){
-//            //ask for permission
-//            requestPermissions( {Manifest.permission.ACTIVITY_RECOGNITION}.toString(), PHYISCAL_ACTIVITY)
-//        }
         val stepCounter = Intent(this, StepsData::class.java)
         startService(stepCounter)
     }
@@ -44,13 +45,37 @@ class ContextUpdateManager: Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
+
+        var bundle: Bundle? = if(intent != null) {
+            intent.extras!!;
+        }else{
+            null;
+        }
+        if (bundle != null && intent != null) {
+            if (intent.hasExtra("Data")) {
+                // saving data received from datasource
+                val type = intent.getStringExtra("Data")
+                if(type == "Steps") {
+                    val steps = intent.getIntExtra("Count", 0);
+                    if (steps != -1) {
+                        GlobalScope.launch {
+                            contextHolder.addSteps(steps)
+                        }
+                        print("Updated steps")
+                    }
+                }
+            }
+
+        }
         startForeground()
         return START_STICKY
     }
 
-    private fun startForeground(){
+    private fun startForeground() {
         if (triggerManager != null)
-            triggerManager.check()
+            GlobalScope.launch {
+                triggerManager.check()
+            }
         startForeground(
             NOTIFICATION_ID, sendNotification(
                 "Service is running", "Service enabled"

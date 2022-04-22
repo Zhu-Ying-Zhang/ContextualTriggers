@@ -15,15 +15,18 @@ class TriggerManger constructor(
 ) {
 
     private val noMovementTrigger = NoMovementTrigger(contextHolder = contextHolder)
+    private val stepsTrigger = StepsTrigger(contextHolder = contextHolder)
     private val batteryTrigger = BatteryTrigger(contextHolder = contextHolder)
 
-    fun check() {
+    suspend fun check() {
         if (noMovementTrigger.isTriggered())
             handleNotification(noMovementTrigger)
 //        if (batteryTrigger.isTriggered()) {
 //            Log.i("Battery Trigger", "Start")
 //            handleNotification(batteryTrigger)
 //        }
+        if(stepsTrigger.isTriggered())
+            handleNotification(stepsTrigger)
     }
 
     private fun handleNotification(trigger: Trigger) {

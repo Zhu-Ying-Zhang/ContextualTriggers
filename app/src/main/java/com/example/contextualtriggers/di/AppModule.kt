@@ -10,6 +10,7 @@ import com.example.contextualtriggers.context.room_database.Steps.StepsRepoImple
 import com.example.contextualtriggers.context.room_database.Steps.StepsRepository
 import com.example.contextualtriggers.context.use_cases.Geofence.AddGeofence
 import com.example.contextualtriggers.context.use_cases.Geofence.GeofenceUseCases
+import com.example.contextualtriggers.context.use_cases.Geofence.GetGeofence
 import com.example.contextualtriggers.context.use_cases.Steps.*
 import dagger.Module
 import dagger.Provides
@@ -44,6 +45,7 @@ object AppModule {
     fun provideGeofenceUseCases(repository: GeofenceRepository): GeofenceUseCases {
         return GeofenceUseCases(
             addGeofence = AddGeofence(repository),
+            getGeofence = GetGeofence(repository)
         )
     }
 

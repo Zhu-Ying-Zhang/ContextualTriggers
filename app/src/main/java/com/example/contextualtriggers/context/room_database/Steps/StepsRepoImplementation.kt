@@ -1,9 +1,10 @@
 package com.example.contextualtriggers.context.room_database.Steps
 
 import com.example.contextualtriggers.context.Steps
+import com.example.contextualtriggers.context.room_database.Geofence.GeofenceDao
 import kotlinx.coroutines.flow.Flow
 
-class StepsRepoImplementation (
+class StepsRepoImplementation(
     private val dao: StepsDao
 ) : StepsRepository {
 

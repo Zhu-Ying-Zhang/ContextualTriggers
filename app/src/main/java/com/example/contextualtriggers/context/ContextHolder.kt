@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class ContextHolder constructor(
     context: Context,
-//    private val geofenceUseCases: GeofenceUseCases,
+    private val geofenceUseCases: GeofenceUseCases,
     private val stepsUseCases: StepsUseCases
 ): ContextAPI {
 

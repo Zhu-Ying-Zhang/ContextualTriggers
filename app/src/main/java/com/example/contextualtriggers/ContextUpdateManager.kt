@@ -2,31 +2,28 @@ package com.example.contextualtriggers
 
 import android.app.*
 import android.app.Notification
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
-import androidx.room.Room
 import com.example.contextualtriggers.context.ContextHolder
 import com.example.contextualtriggers.context.StepsData
+import com.example.contextualtriggers.context.room_database.Geofence.GeofenceDatabase
+import com.example.contextualtriggers.context.room_database.Geofence.GeofenceRepoImplementation
 import com.example.contextualtriggers.context.room_database.Steps.StepsDatabase
 import com.example.contextualtriggers.context.room_database.Steps.StepsRepoImplementation
+import com.example.contextualtriggers.context.use_cases.Geofence.AddGeofence
 import com.example.contextualtriggers.context.use_cases.Geofence.GeofenceUseCases
+import com.example.contextualtriggers.context.use_cases.Geofence.GetGeofence
 import com.example.contextualtriggers.context.use_cases.Steps.*
 import com.example.contextualtriggers.triggers.TriggerManger
-import dagger.hilt.android.internal.Contexts
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 private const val NOTIFICATION_ID = 1001
 private const val NOTIFICATION_CHANNEL_ID = "Channel_Id"
 
 class ContextUpdateManager(): Service() {
-
-//    @Inject
-//    lateinit var geofenceUseCases: GeofenceUseCases
 
     private lateinit var contextHolder: ContextHolder
     private lateinit var triggerManager: TriggerManger
@@ -34,6 +31,12 @@ class ContextUpdateManager(): Service() {
     override fun onCreate() {
         Log.d("ContextTrigger", "Creating context manager...")
         super.onCreate()
+        val geofenceDatabase = GeofenceDatabase.getInstance(this)
+        val geofenceRepository = GeofenceRepoImplementation(geofenceDatabase.geofenceDao)
+        val geofenceUseCases = GeofenceUseCases(
+            addGeofence = AddGeofence(geofenceRepository),
+            getGeofence = GetGeofence(geofenceRepository)
+        )
         val stepsDatabase = StepsDatabase.getInstance(this)
         val stepsRepository = StepsRepoImplementation(stepsDatabase.stepsDao)
         val stepsUseCases = StepsUseCases(
@@ -42,7 +45,7 @@ class ContextUpdateManager(): Service() {
             insertSteps = InsertSteps(stepsRepository),
             stepsExist = StepsExist(stepsRepository)
         )
-        contextHolder = ContextHolder(this, stepsUseCases)
+        contextHolder = ContextHolder(this, geofenceUseCases, stepsUseCases)
         triggerManager = TriggerManger(this, contextHolder)
         val stepCounter = Intent(this, StepsData::class.java)
         startService(stepCounter)

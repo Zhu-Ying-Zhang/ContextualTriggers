@@ -1,5 +1,7 @@
 package com.example.contextualtriggers;
 
+import static android.view.Gravity.CENTER;
+
 import android.Manifest;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
@@ -8,9 +10,13 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -26,11 +32,14 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
+import java.util.List;
+
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener {
 
     private static final String TAG = "MapsActivity";
 
@@ -39,10 +48,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GeofencingClient geofencingClient;
 
+
     private GeofenceContext geofenceContext;
 
-    private float GEOFENCE_RADIUS = 200;
-    private String GEOFENCE_ID = "SOME_GEOFENCE_ID";
+    private float GEOFENCE_RADIUS = 50;
+    String GEOFENCE_ID = "SELECTED_GEOFENCE_ID";
+
     private int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
     private int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
 
@@ -83,6 +94,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         enableUserLocation();
 
         mMap.setOnMapLongClickListener(this);
+        mMap.setOnMarkerDragListener(this);
         mMap.getMinZoomLevel();
         mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
     }
@@ -100,7 +112,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 checkLocationPermission();
             } else {
                 //We do not have the permission..
-                new AlertDialog.Builder(this)
+                new AlertDialog.Builder(this,R.style.Theme_ContextualTriggers)
                         .setTitle("Location Denied")
                         .setPositiveButton("Back", new DialogInterface.OnClickListener() {
                             @Override
@@ -163,7 +175,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, BACKGROUND_LOCATION_ACCESS_REQUEST_CODE);
 
                     checkLocationPermission();
-                    //  new AlertDialog.Builder(this)
+                    //  new AlertDialog.Builder(this,R.style.Theme_ContextualTriggers)
 //                            .setTitle("Location Access")
 //                            .setMessage("Set Allow all the time  to for background use")
 //                            .setPositiveButton("Allow", new DialogInterface.OnClickListener() {
@@ -190,6 +202,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
 
+
         } else {
             handleMapLongClick(latLng);
         }
@@ -197,13 +210,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void handleMapLongClick(LatLng latLng) {
-        mMap.clear();
+//        mMap.clear();
         addMarker(latLng);
         addCircle(latLng, GEOFENCE_RADIUS);
         addGeofence(latLng, GEOFENCE_RADIUS);
     }
 
-    private void addGeofence(LatLng latLng, float radius) {
+
+    private void addGeofence( LatLng latLng, float radius) {
 
         Geofence geofence = geofenceContext.getGeofence(GEOFENCE_ID, latLng, radius, Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT);
         GeofencingRequest geofencingRequest = geofenceContext.getGeofencingRequest(geofence);
@@ -235,9 +249,54 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 });
     }
 
+
+    /**
+     * Ref: https://android-er.blogspot.com/2015/10/add-marker-to-google-map-google-maps.html
+     **/
     private void addMarker(LatLng latLng) {
-        MarkerOptions markerOptions = new MarkerOptions().position(latLng);
-        mMap.addMarker(markerOptions);
+        if (mMap != null) {
+
+            //create custom LinearLayout programmatically
+            LinearLayout layout = new LinearLayout(MapsActivity.this);
+            layout.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT));
+            layout.setOrientation(LinearLayout.VERTICAL);
+
+            final Spinner spinnerField = new Spinner(MapsActivity.this);
+
+            final String[] choices = {"Home", "Work", "Gym", "Supermarket"};
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MapsActivity.this,
+                    android.R.layout.simple_spinner_item, choices);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerField.setAdapter(adapter);
+            spinnerField.setGravity(CENTER);
+
+            layout.addView(spinnerField);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.AlertDialog_AppCompat_Dialog);
+            builder.setTitle("Please select your Geofence name? ");
+            builder.setView(layout);
+            AlertDialog alertDialog = builder.create();
+
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    MarkerOptions markerOptions;
+                    String strSpinner = spinnerField.getSelectedItem().toString();
+
+                    markerOptions = new MarkerOptions().position(latLng).title(strSpinner);
+                    markerOptions.draggable(true);
+                    mMap.addMarker(markerOptions);
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                }
+            });
+            builder.setNegativeButton("Cancel", null);
+            builder.show();
+        } else {
+            Toast.makeText(MapsActivity.this, "Map not ready", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void addCircle(LatLng latLng, float radius) {
@@ -247,8 +306,71 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         circleOptions.strokeColor(Color.argb(255, 255, 0, 0));
         circleOptions.fillColor(Color.argb(64, 255, 0, 0));
         circleOptions.strokeWidth(4);
-        //  circleOptions.notify();
         mMap.addCircle(circleOptions);
+    }
+    @Override
+    public void onMarkerDragStart(Marker marker) {
+        marker.setTitle(marker.getPosition().toString());
+        marker.showInfoWindow();
+        marker.setAlpha(0.5f);
+    }
 
+    @Override
+    public void onMarkerDrag(Marker marker) {
+        marker.setTitle(marker.getPosition().toString());
+        marker.showInfoWindow();
+        marker.setAlpha(0.5f);
+    }
+
+    @Override
+    public void onMarkerDragEnd(Marker marker) {
+        marker.setTitle(marker.getPosition().toString());
+        marker.showInfoWindow();
+        marker.setAlpha(1.0f);
+
+        new AlertDialog.Builder(this,R.style.AlertDialog_AppCompat_Dialog)
+                .setTitle("Remove Geofances")
+                .setMessage("This will remove all geofences")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        removeGeofence();
+                        mMap.clear();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .create()
+                .show();
+        mMap.clear();
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+        super.onPointerCaptureChanged(hasCapture);
+    }
+
+    private void removeGeofence() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+//        if(geofenceRequestIds != null) {
+//            geofencingClient.removeGeofences(geofenceRequestIds).addOnSuccessListener(aVoid -> Log.e("TAG", "Geocenfences removed")).addOnFailureListener(e -> {
+//                String errorMessage = geofenceContext.getErrorString(e);
+//                Log.e("TAG", "onFailure: " + errorMessage);
+//                Toast.makeText(getApplicationContext(), "onFailure: " + errorMessage, Toast.LENGTH_SHORT).show();
+//            });
+//        } else {
+            Log.i(TAG,"no list provided, removing ALL geofences");
+            geofencingClient.removeGeofences(geofenceContext.getPendingIntent()).addOnSuccessListener(aVoid -> Log.e("TAG", "Geocenfences removed")).addOnFailureListener(e -> {
+                String errorMessage = geofenceContext.getErrorString(e);
+                Log.e("TAG", "onFailure: " + errorMessage);
+                Toast.makeText(getApplicationContext(), "onFailure: " + errorMessage, Toast.LENGTH_SHORT).show();
+            });;
+   //     }
     }
 }

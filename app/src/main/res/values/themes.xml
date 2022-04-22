@@ -4,4 +4,11 @@
     <style name="Theme.ContextualTriggers" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">@color/purple_700</item>
     </style>
+    <style name="AlertDialog.AppCompat.Dialog"
+            parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/purple_700</item>
+              <item name="android:background">@color/white</item>
+    </style>
+
+
 </resources>

@@ -6,10 +6,10 @@ import com.example.contextualtriggers.context.ContextAPI
 
 
 
-private const val NOTIFICATION_TITLE = "No Movement Trigger"
-private const val NOTIFICATION_TEXT = "Hey! I think it's time for a walk!"
+private const val NOTIFICATION_TITLE = "At Work Trigger"
+private const val NOTIFICATION_TEXT = "You should take a small break from work and go for a walk!"
 
-class NoMovementTrigger constructor(private val contextHolder: ContextAPI): Trigger{
+class atWork constructor(private val contextHolder: ContextAPI): Trigger{
 
     override fun getNotificationTitle(): String = NOTIFICATION_TITLE
 
@@ -17,6 +17,6 @@ class NoMovementTrigger constructor(private val contextHolder: ContextAPI): Trig
 
     override fun getNotificationIntent(): Intent? = null
 
-   override fun isTriggered(): Boolean = contextHolder.noMovement()
+   override fun isTriggered(): Boolean = contextHolder.atwork()
 }
 

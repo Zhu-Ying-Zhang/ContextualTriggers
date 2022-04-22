@@ -10,7 +10,7 @@ import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
 
 
-class BootBroadcastReceiver : BroadcastReceiver() {
+class  BootBroadcastReceiver : BroadcastReceiver() {
     private val TAG = "bootcastReceiver"
     override fun onReceive(context: Context, intent: Intent) {
         Log.d("ContextTriggers", "System booted")

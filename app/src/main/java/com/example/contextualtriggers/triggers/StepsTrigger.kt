@@ -34,12 +34,13 @@ class StepsTrigger(
 
     override suspend fun isTriggered(): Boolean {
         mSteps = mContextHolder!!.getSteps()
-        println("Steps walked today: $mSteps")
-        val averageSteps = getWeeklyAverage()
-        println("Average steps: $averageSteps")
-        val estimation = getEstimation(mSteps)
-        println("Estimation: $estimation")
-        return estimation < TARGET_STEPS
+//        println("Steps walked today: $mSteps")
+//        val averageSteps = getWeeklyAverage()
+//        println("Average steps: $averageSteps")
+//        val estimation = getEstimation(mSteps)
+//        println("Estimation: $estimation")
+//        return estimation < TARGET_STEPS
+        return true
     }
 
     /**

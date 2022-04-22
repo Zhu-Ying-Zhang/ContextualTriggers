@@ -66,6 +66,6 @@ class StepsData : Service(), SensorEventListener {
         /**
          * The number of steps to be walked for the counter to send an intent.
          */
-        private const val THRESHOLD = 100
+        private const val THRESHOLD = 10
     }
 }

@@ -67,7 +67,10 @@ class ContextUpdateManager(): Service() {
             }
 
         }
-        startForeground()
+        if (triggerManager != null)
+            GlobalScope.launch {
+                triggerManager.check()
+            }
         return START_STICKY
     }
 

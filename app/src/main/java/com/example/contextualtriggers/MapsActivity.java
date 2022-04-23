@@ -59,6 +59,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
     private int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
+    private int markerCount = 0;
+    private final String[] choices = {"Home", "Work", "Gym", "Supermarket"};
 
     private ContextHolder contextHolder;
 
@@ -215,10 +217,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void handleMapLongClick(LatLng latLng) {
-//        mMap.clear();
-        addMarker(latLng);
-        addCircle(latLng, GEOFENCE_RADIUS);
-        addGeofence(latLng, GEOFENCE_RADIUS);
+
+        if (markerCount < 10) {
+            markerCount = markerCount+ 1;
+
+            addMarker(latLng);
+            addCircle(latLng, GEOFENCE_RADIUS);
+            addGeofence(latLng, GEOFENCE_RADIUS);
+
+        } else {
+            Toast.makeText(getApplicationContext(), "Only 10 Geofence allowed!",
+                    Toast.LENGTH_SHORT).show();
+            new AlertDialog.Builder(this,R.style.AlertDialog_AppCompat_Dialog)
+                    .setTitle("Remove Geofence")
+                    .setMessage("Would you like to remove Geofence?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                            removeGeofence();
+                            mMap.clear();
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    })
+                    .create()
+                    .show();
+        }
+
     }
 
 
@@ -270,7 +300,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             final Spinner spinnerField = new Spinner(MapsActivity.this);
 
-            final String[] choices = {"Home", "Work", "Gym", "Supermarket"};
+
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(MapsActivity.this,
                     android.R.layout.simple_spinner_item, choices);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -292,6 +322,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     String strSpinner = spinnerField.getSelectedItem().toString();
 
                     markerOptions = new MarkerOptions().position(latLng).title(strSpinner);
+
                     markerOptions.draggable(true);
                     mMap.addMarker(markerOptions);
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));

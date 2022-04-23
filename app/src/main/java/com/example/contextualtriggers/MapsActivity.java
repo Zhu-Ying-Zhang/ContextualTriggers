@@ -226,8 +226,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             addGeofence(latLng, GEOFENCE_RADIUS);
 
         } else {
-            Toast.makeText(getApplicationContext(), "Only 10 Geofence allowed!",
-                    Toast.LENGTH_SHORT).show();
+
             new AlertDialog.Builder(this,R.style.AlertDialog_AppCompat_Dialog)
                     .setTitle("Would you like to remove Geofence?")
                     .setMessage("Only 10 Geofence allowed!")

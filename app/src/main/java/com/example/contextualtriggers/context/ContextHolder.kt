@@ -19,7 +19,7 @@ class ContextHolder constructor(
     var batteryLevel: Int = 0
     private var context: Context = context
     var noMovement = false
-    var batteryTriggerStatus = true
+    private var batteryTriggerStatus = true
 
     override fun noMovement(): Boolean = noMovement
 
@@ -51,4 +51,8 @@ class ContextHolder constructor(
     override fun batteryLevel(): Int = batteryLevel
 
     override fun checkBatteryTriggerStatus(): Boolean = batteryTriggerStatus
+
+    override fun changeBatteryTriggerStatus(status: Boolean) {
+        batteryTriggerStatus = status
+    }
 }

@@ -11,4 +11,6 @@ interface ContextAPI {
     fun batteryLevel(): Int
 
     fun checkBatteryTriggerStatus(): Boolean
+
+    fun changeBatteryTriggerStatus(status: Boolean)
 }

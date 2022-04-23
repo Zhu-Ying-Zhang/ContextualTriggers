@@ -25,7 +25,7 @@ class TriggerManger constructor(
             Notification().handleNotification(context, noMovementTrigger)
         if (batteryTrigger.isTriggered()) {
             Notification().handleNotification("Trigger_Battery", 10001, context, batteryTrigger)
-            contextHolder.batteryTriggerStatus = false
+            contextHolder.changeBatteryTriggerStatus(false)
         }
         if (stepsTrigger.isTriggered())
             Notification().handleNotification(context, stepsTrigger)

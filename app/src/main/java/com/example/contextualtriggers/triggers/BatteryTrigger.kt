@@ -20,11 +20,19 @@ class BatteryTrigger constructor(
 
     override suspend fun isTriggered(): Boolean {
         val batteryProportion: Int = contextHolder.batteryLevel()
-        Log.d("BatteryTrigger", batteryProportion.toString())
+        Log.d("BatteryTrigger-1", batteryProportion.toString())
         if (batteryProportion >= batteryTarget)
-            return true
-        else
-            return contextHolder.checkBatteryTriggerStatus()
-
+            Log.d("BatteryTrigger-2", contextHolder.checkBatteryTriggerStatus().toString())
+            if (contextHolder.checkBatteryTriggerStatus()) {
+                Log.d("BatteryTrigger-3", contextHolder.checkBatteryTriggerStatus().toString())
+                contextHolder.changeBatteryTriggerStatus(false)
+                return true
+            }
+        else {
+                Log.d("BatteryTrigger-4", contextHolder.checkBatteryTriggerStatus().toString())
+                contextHolder.changeBatteryTriggerStatus(true)
+                Log.d("BatteryTrigger-5", contextHolder.checkBatteryTriggerStatus().toString())
+                return false
+            }
     }
 }

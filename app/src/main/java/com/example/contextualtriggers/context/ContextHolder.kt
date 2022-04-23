@@ -16,8 +16,10 @@ class ContextHolder constructor(
     private val stepsUseCases: StepsUseCases
 ): ContextAPI {
 
+    var batteryLevel: Int = 0
     private var context: Context = context
     var noMovement = false
+    var batteryTriggerStatus = true
 
     override fun noMovement(): Boolean = noMovement
 
@@ -46,15 +48,7 @@ class ContextHolder constructor(
         }
     }
 
-    override fun getBatteryLevel(): Int {
-        var filter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-        var batteryStatus: Intent? = context.registerReceiver(null, filter)
+    override fun batteryLevel(): Int = batteryLevel
 
-        var batteryLevel = batteryStatus?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
-        val batteryScale = batteryStatus?.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
-
-        val batteryProportion: Float = (batteryLevel!! / batteryScale!!.toFloat()) * 100
-        println("BATTERY LEVEL: $batteryProportion")
-        return batteryProportion.toInt()
-    }
+    override fun checkBatteryTriggerStatus(): Boolean = batteryTriggerStatus
 }

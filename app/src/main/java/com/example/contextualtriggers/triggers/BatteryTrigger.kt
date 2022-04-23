@@ -1,6 +1,7 @@
 package com.example.contextualtriggers.triggers
 
 import android.content.Intent
+import android.util.Log
 import com.example.contextualtriggers.context.ContextAPI
 
 private const val NOTIFICATION_TITLE = "Battery Status"
@@ -18,7 +19,12 @@ class BatteryTrigger constructor(
     override fun getNotificationIntent(): Intent? = null
 
     override suspend fun isTriggered(): Boolean {
-        val batteryProportion: Int = contextHolder.getBatteryLevel()
-        return batteryProportion >= batteryTarget
+        val batteryProportion: Int = contextHolder.batteryLevel()
+        Log.d("BatteryTrigger", batteryProportion.toString())
+        if (batteryProportion >= batteryTarget)
+            return true
+        else
+            return contextHolder.checkBatteryTriggerStatus()
+
     }
 }

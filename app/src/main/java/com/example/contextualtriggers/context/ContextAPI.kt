@@ -8,5 +8,7 @@ interface ContextAPI {
 
     suspend fun addSteps(steps: Int)
 
-    fun getBatteryLevel(): Int
+    fun batteryLevel(): Int
+
+    fun checkBatteryTriggerStatus(): Boolean
 }

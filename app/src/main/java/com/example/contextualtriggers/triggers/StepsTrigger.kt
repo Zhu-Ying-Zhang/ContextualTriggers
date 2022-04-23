@@ -6,7 +6,6 @@ import java.util.*
 
 class StepsTrigger(
     private val contextHolder: ContextAPI,
-    private val batteryTarget: Int = 60
 ): Trigger {
 
     private val NOTIFICATION_TITLE = "Steps Trigger"

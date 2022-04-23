@@ -7,37 +7,47 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.contextualtriggers.triggers.Trigger
 
-class Notification constructor(private val context: Context) {
+class Notification {
 
-    fun handleNotification(title: String, message: String) {
-        sendNotification(100,
-            "Channel_Id",
-            title,
-            message,
-            null
+    fun handleNotification(context: Context) {
+        sendNotification(
+            context,
+            101,
+            "Trigger",
+            "Hi",
+            "Test"
         )
     }
 
-    fun handleNotification(trigger: Trigger) {
-        sendNotification(100,
-            "Channel_Id",
-            trigger.getNotificationTitle(),
-            trigger.getNotificationMessage(),
-            trigger.getNotificationIntent()
+    fun handleNotification(context: Context, trigger: Trigger) {
+        handleNotification("Trigger", context, trigger)
+    }
+
+    fun handleNotification(channelId: String, context: Context, trigger: Trigger) {
+        handleNotification(channelId, 101, context, trigger.getNotificationTitle(), trigger.getNotificationMessage())
+    }
+
+    fun handleNotification(channelId: String, id: Int, context: Context, trigger: Trigger) {
+        handleNotification(channelId, id, context, trigger.getNotificationTitle(), trigger.getNotificationMessage())
+    }
+
+    fun handleNotification(channelId: String, id: Int, context: Context, title: String, message: String) {
+        sendNotification(
+            context,
+            id,
+            channelId,
+            title,
+            message
         )
     }
 
     // TODO: Paste notification part into this place.
-    private fun sendNotification(id: Int, channelId: String, title: String, message: String, intent: Intent?) {
+    private fun sendNotification(context: Context, id: Int, channelId: String, title: String, message: String) {
         var notification: NotificationCompat.Builder =
             NotificationCompat.Builder(context, channelId)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
-
-//        if (intent != null) {
-//            notification.setContentIntent(PendingIntent.getActivity(context, 0, intent, 0))
-//        }
 
         val notify: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 

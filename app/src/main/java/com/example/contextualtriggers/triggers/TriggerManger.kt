@@ -22,35 +22,12 @@ class TriggerManger constructor(
 
     suspend fun check() {
         if (noMovementTrigger.isTriggered())
-            Notification(context).handleNotification(noMovementTrigger)
-        if(stepsTrigger.isTriggered())
-            Notification(context).handleNotification(stepsTrigger)
-    }
-
-    private fun handleNotification(trigger: Trigger) {
-        sendNotification(100,
-            "Trigger",
-            trigger.getNotificationTitle(),
-            trigger.getNotificationMessage(),
-            trigger.getNotificationIntent()
-        )
-    }
-
-    // TODO: Paste notification part into this place.
-    private fun sendNotification(id: Int, channelId: String, title: String, message: String, intent: Intent?) {
-        var notification: NotificationCompat.Builder =
-            NotificationCompat.Builder(context, channelId)
-                .setContentTitle(title)
-                .setContentText(message)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-
-//        if (intent != null) {
-//            notification.setContentIntent(PendingIntent.getActivity(context, 0, intent, 0))
-//        }
-
-        val notify: NotificationManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-
-        Log.d("TManager", "Notification Sent")
-        notify.notify(id, notification.build())
+            Notification().handleNotification(context, noMovementTrigger)
+        if (batteryTrigger.isTriggered()) {
+            Notification().handleNotification("Trigger_Battery", 10001, context, batteryTrigger)
+            contextHolder.batteryTriggerStatus = false
+        }
+        if (stepsTrigger.isTriggered())
+            Notification().handleNotification(context, stepsTrigger)
     }
 }

@@ -8,6 +8,7 @@ import android.os.IBinder
 import android.util.Log
 import com.example.contextualtriggers.context.ContextHolder
 import com.example.contextualtriggers.context.StepsData
+import com.example.contextualtriggers.context.WeatherDataSource
 import com.example.contextualtriggers.context.room_database.Geofence.GeofenceDatabase
 import com.example.contextualtriggers.context.room_database.Geofence.GeofenceRepoImplementation
 import com.example.contextualtriggers.context.room_database.Steps.StepsDatabase
@@ -16,6 +17,8 @@ import com.example.contextualtriggers.context.use_cases.Geofence.AddGeofence
 import com.example.contextualtriggers.context.use_cases.Geofence.GeofenceUseCases
 import com.example.contextualtriggers.context.use_cases.Geofence.GetGeofence
 import com.example.contextualtriggers.context.use_cases.Steps.*
+import com.example.contextualtriggers.triggers.BatteryTrigger
+import com.example.contextualtriggers.triggers.Trigger
 import com.example.contextualtriggers.triggers.TriggerManger
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -23,10 +26,11 @@ import kotlinx.coroutines.launch
 private const val NOTIFICATION_ID = 1001
 private const val NOTIFICATION_CHANNEL_ID = "Channel_Id"
 
-class ContextUpdateManager(): Service() {
+class ContextUpdateManager: Service() {
 
     private lateinit var contextHolder: ContextHolder
     private lateinit var triggerManager: TriggerManger
+    private lateinit var batteryTrigger: Trigger
 
     override fun onCreate() {
         Log.d("ContextTrigger", "Creating context manager...")
@@ -47,6 +51,7 @@ class ContextUpdateManager(): Service() {
         )
         contextHolder = ContextHolder(this, geofenceUseCases, stepsUseCases)
         triggerManager = TriggerManger(this, contextHolder)
+
         val stepCounter = Intent(this, StepsData::class.java)
         startService(stepCounter)
     }
@@ -71,6 +76,12 @@ class ContextUpdateManager(): Service() {
                             contextHolder.addSteps(steps)
                         }
                         print("Updated steps")
+                    }
+                } else if (type == "Battery") {
+                    val level = intent.getIntExtra("batteryLevel", 0)
+                    Log.d("ContextUpdate", level.toString())
+                    GlobalScope.launch {
+                        contextHolder.batteryLevel = level
                     }
                 }
             }

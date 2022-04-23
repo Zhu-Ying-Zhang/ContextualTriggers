@@ -27,6 +27,7 @@ private val LightColorPalette = lightColors(
     */
 )
 
+
 @Composable
 fun ContextualTriggersTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

@@ -229,8 +229,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Toast.makeText(getApplicationContext(), "Only 10 Geofence allowed!",
                     Toast.LENGTH_SHORT).show();
             new AlertDialog.Builder(this,R.style.AlertDialog_AppCompat_Dialog)
-                    .setTitle("Remove Geofence")
-                    .setMessage("Would you like to remove Geofence?")
+                    .setTitle("Would you like to remove Geofence?")
+                    .setMessage("Only 10 Geofence allowed!")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {

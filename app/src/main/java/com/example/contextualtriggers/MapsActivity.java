@@ -5,6 +5,7 @@ import static android.view.Gravity.CENTER;
 import android.Manifest;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
@@ -24,12 +25,14 @@ import com.example.contextualtriggers.context.ContextHolder;
 import com.example.contextualtriggers.context.GeofenceContext;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.GeofencingEvent;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -39,7 +42,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener,GoogleMap.OnCircleClickListener {
 
     private static final String TAG = "MapsActivity";
 
@@ -72,6 +75,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         geofencingClient = LocationServices.getGeofencingClient(this);
         geofenceContext = new GeofenceContext(this);
+
     }
 
 
@@ -97,6 +101,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMarkerDragListener(this);
         mMap.getMinZoomLevel();
         mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+
     }
 
     private void enableUserLocation() {
@@ -308,23 +313,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         circleOptions.strokeWidth(4);
         mMap.addCircle(circleOptions);
     }
+    public  void onCircleClick (Circle circle)
+    {
+
+        circle.getZIndex();
+
+        Log.i("kirubel","kirubel"+circle.getZIndex());
+
+    }
     @Override
     public void onMarkerDragStart(Marker marker) {
-        marker.setTitle(marker.getPosition().toString());
+        marker.setTitle(marker.getTitle());
         marker.showInfoWindow();
         marker.setAlpha(0.5f);
+
     }
 
     @Override
     public void onMarkerDrag(Marker marker) {
-        marker.setTitle(marker.getPosition().toString());
+        marker.setTitle(marker.getTitle());
         marker.showInfoWindow();
         marker.setAlpha(0.5f);
     }
 
     @Override
     public void onMarkerDragEnd(Marker marker) {
-        marker.setTitle(marker.getPosition().toString());
+        marker.setTitle(marker.getTitle());
         marker.showInfoWindow();
         marker.setAlpha(1.0f);
 
@@ -334,6 +348,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+//                        GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(Intent.makeMainActivity());
+//                        List<Geofence> geofenceList = geofencingEvent.getTriggeringGeofences();
+//                        for (Geofence geofence : geofenceList) {
+//                            Log.d(TAG, "onReceive: " + geofence.getRequestId());
+//                        }
                         removeGeofence();
                         mMap.clear();
                     }
@@ -346,7 +365,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 })
                 .create()
                 .show();
-        mMap.clear();
     }
 
     @Override
@@ -371,6 +389,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.e("TAG", "onFailure: " + errorMessage);
                 Toast.makeText(getApplicationContext(), "onFailure: " + errorMessage, Toast.LENGTH_SHORT).show();
             });;
-   //     }
-    }
+        }
+//    }
 }

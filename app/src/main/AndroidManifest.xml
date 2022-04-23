@@ -11,6 +11,7 @@
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.PHYSICAL_ACTIVITY"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
 
     <application
         android:name=".CTApplication"
@@ -72,6 +73,7 @@
 
         <service android:name=".ContextUpdateManager" />
         <service android:name=".context.StepsData" />
+        <service android:name=".context.CalendarData" />
         <service android:name=".context.WeatherDataSource" />
     </application>
 

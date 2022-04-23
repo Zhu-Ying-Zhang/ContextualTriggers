@@ -2,26 +2,31 @@ package com.example.contextualtriggers
 
 import android.app.*
 import android.app.Notification
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.IBinder
+import android.provider.CalendarContract
 import android.util.Log
+import com.example.contextualtriggers.context.CalendarData
+import com.example.contextualtriggers.context.CalendarEvent
 import com.example.contextualtriggers.context.ContextHolder
 import com.example.contextualtriggers.context.StepsData
-import com.example.contextualtriggers.context.WeatherDataSource
 import com.example.contextualtriggers.context.room_database.Geofence.GeofenceDatabase
 import com.example.contextualtriggers.context.room_database.Geofence.GeofenceRepoImplementation
 import com.example.contextualtriggers.context.room_database.Steps.StepsDatabase
 import com.example.contextualtriggers.context.room_database.Steps.StepsRepoImplementation
+import com.example.contextualtriggers.context.room_database.Steps.util.CurrentDate
 import com.example.contextualtriggers.context.use_cases.Geofence.AddGeofence
 import com.example.contextualtriggers.context.use_cases.Geofence.GeofenceUseCases
 import com.example.contextualtriggers.context.use_cases.Geofence.GetGeofence
 import com.example.contextualtriggers.context.use_cases.Steps.*
-import com.example.contextualtriggers.triggers.BatteryTrigger
 import com.example.contextualtriggers.triggers.Trigger
 import com.example.contextualtriggers.triggers.TriggerManger
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 private const val NOTIFICATION_ID = 1001
 private const val NOTIFICATION_CHANNEL_ID = "Channel_Id"
@@ -54,6 +59,16 @@ class ContextUpdateManager: Service() {
 
         val stepCounter = Intent(this, StepsData::class.java)
         startService(stepCounter)
+
+        val calendarData = Intent(this, CalendarData::class.java)
+//        startService(calendarData)
+
+        val cal = Calendar.getInstance()
+        val pintent = PendingIntent.getService(this, 0, calendarData, PendingIntent.FLAG_IMMUTABLE)
+        val alarm = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        Log.d("Main", java.lang.String.valueOf(cal.timeInMillis))
+        //make the alarm goes off every 10 sec (not exact help to save battery life)
+        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.timeInMillis, 10000, pintent)
     }
 
     override fun onBind(p0: Intent?): IBinder? {
@@ -80,9 +95,12 @@ class ContextUpdateManager: Service() {
                 } else if (type == "Battery") {
                     val level = intent.getIntExtra("batteryLevel", 0)
                     Log.d("ContextUpdate", level.toString())
-                    GlobalScope.launch {
-                        contextHolder.batteryLevel = level
-                    }
+                    contextHolder.batteryLevel = level
+                } else if (type == "Calendar") {
+                    val events = intent.getParcelableArrayListExtra<CalendarEvent>("Events")
+                    Log.d("ContextUpdate", "Events Updating")
+                    contextHolder.todaysEvents = events
+                    contextHolder.nextEvent()
                 }
             }
             if (triggerManager != null)
@@ -124,5 +142,38 @@ class ContextUpdateManager: Service() {
             .setContentText(title)
             .setContentTitle(message)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
+    }
+
+    private fun readCalendarEvents() {
+        Log.d("Upcoming Events", "Reading Calendar Data")
+        val titleCol = CalendarContract.Events.TITLE
+        val startDateCol = CalendarContract.Events.DTSTART
+        val endDateCol = CalendarContract.Events.DTEND
+
+        val projection = arrayOf(titleCol, startDateCol, endDateCol)
+        val selection = CalendarContract.Events.IS_PRIMARY + " == 1"
+
+        val cursor = contentResolver.query(
+            CalendarContract.Events.CONTENT_URI,
+            projection, selection, null, null
+        )
+
+        val titleColIdx = cursor!!.getColumnIndex(titleCol)
+        val startDateColIdx = cursor.getColumnIndex(startDateCol)
+        val endDateColIdx = cursor.getColumnIndex(endDateCol)
+
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US)
+
+        while (cursor.moveToNext()) {
+            val title = cursor.getString(titleColIdx)
+            val startDate = formatter.format(Date(cursor.getLong(startDateColIdx)))
+            val endDate = formatter.format(Date(cursor.getLong(endDateColIdx)))
+
+            if (startDate.subSequence(0, 10).contentEquals(CurrentDate().substring(0, 10))) {
+                Log.d("Upcoming Events", "$title $startDate $endDate")
+            }
+        }
+
+        cursor.close()
     }
 }

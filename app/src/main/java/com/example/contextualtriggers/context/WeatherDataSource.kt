@@ -32,6 +32,7 @@ class WeatherDataSource: Service() {
                 override fun onLocationChanged(location: Location?) {
                     mLocation = location
                     mLocation?.let {
+                        Log.d(TAG, "WeatherDataSource --> mLocation")
                         weatherUrl = "https://api.weatherbit.io/v2.0/current?lat="+ location?.latitude +"&lon=" + location?.longitude + "&key="+ apiId
                         Log.d(TAG, weatherUrl)
                         getWeatherData()

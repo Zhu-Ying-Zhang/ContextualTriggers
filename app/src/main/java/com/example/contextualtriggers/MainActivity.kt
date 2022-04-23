@@ -1,6 +1,7 @@
 package com.example.contextualtriggers
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
@@ -9,6 +10,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.BatteryManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
@@ -21,9 +23,11 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.contextualtriggers.context.WeatherDataSource
 import com.example.contextualtriggers.ui.theme.ContextualTriggersTheme
+import com.tbruyelle.rxpermissions3.RxPermissions
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.abs
 
@@ -32,10 +36,9 @@ private const val NOTIFICATION_CHANNEL_ID_TRIGGER = "Trigger"
 private const val NOTIFICATION_CHANNEL_ID_TRIGGER_BATTERY = "Trigger_Battery"
 private const val NOTIFICATION_CHANNEL_ID_ERROR = "Error"
 
-private val REQUIRED_PERMISSIONS_LOCATION = arrayOf(
-    Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+private val REQUIRED_PERMISSIONS = arrayOf(
     Manifest.permission.ACCESS_FINE_LOCATION,
-    Manifest.permission.ACCESS_COARSE_LOCATION
+    Manifest.permission.READ_CALENDAR,
 )
 
 @AndroidEntryPoint
@@ -45,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Log.d("ContextTriggers", "Application started")
         createNotificationChannel()
-        requireLocationPermissions()
+        requirePermissions()
         registerReceiver(getBatteryLevel, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
         //This is just a test to create the geofence
          setContent {
@@ -165,27 +168,32 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         Log.d("MainActivity", "into onRequestPermissionsResult $requestCode")
-        when( requestCode ) {
-            100  -> {
-                Log.d("MainActivity", "onRequestPermissionsResult 100")
-                val weather = Intent(this, WeatherDataSource::class.java)
-                startService(weather)
+        Log.d("MainActivity", permissions.toList().toString())
+        Log.d("MainActivity", grantResults.toList().toString())
+        if (permissions.contentEquals(REQUIRED_PERMISSIONS)) {
+            if (Manifest.permission.ACCESS_FINE_LOCATION in permissions){
+                if (grantResults[permissions.indexOf(Manifest.permission.ACCESS_FINE_LOCATION)] == 0) {
+                    val weather = Intent(this, WeatherDataSource::class.java)
+                    startService(weather)
+                }
             }
         }
     }
 
-    private fun requireLocationPermissions() {
-        val fine = ContextCompat.checkSelfPermission(applicationContext
-            , Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-        val coarse = ContextCompat.checkSelfPermission(applicationContext
-            , Manifest.permission.ACCESS_COARSE_LOCATION)  == PackageManager.PERMISSION_GRANTED
-        val background = ContextCompat.checkSelfPermission(applicationContext
-            , Manifest.permission.ACCESS_BACKGROUND_LOCATION)  == PackageManager.PERMISSION_GRANTED
-
-        if (!(fine && coarse && background))
-            requestPermissions(
-                REQUIRED_PERMISSIONS_LOCATION,
-                100
+    private fun requirePermissions() {
+        RxPermissions(this)
+            .requestEachCombined(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.READ_CALENDAR
             )
+            .subscribe { permission ->
+                if (!permission.granted) {
+                    ActivityCompat.requestPermissions(
+                        this,
+                        REQUIRED_PERMISSIONS,
+                        100
+                    )
+                }
+            }
     }
 }

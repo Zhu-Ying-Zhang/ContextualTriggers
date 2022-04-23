@@ -25,6 +25,7 @@ import androidx.core.content.ContextCompat
 import com.example.contextualtriggers.context.WeatherDataSource
 import com.example.contextualtriggers.ui.theme.ContextualTriggersTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.math.abs
 
 private const val NOTIFICATION_CHANNEL_ID_RUNNING = "Channel_Id"
 private const val NOTIFICATION_CHANNEL_ID_TRIGGER = "Trigger"
@@ -97,8 +98,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val getBatteryLevel: BroadcastReceiver = object : BroadcastReceiver() {
+
+        var previousCharge = 0
+
         override fun onReceive(context: Context, intent: Intent) {
             val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
+            if(abs(level - previousCharge) < 10) {
+                return
+            }
+            else {
+                previousCharge = level
+            }
             Log.d("Battery Level", level.toString())
             val intent = Intent(context, ContextUpdateManager::class.java)
             intent.putExtra("Data", "Battery")

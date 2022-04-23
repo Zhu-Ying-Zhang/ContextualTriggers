@@ -59,7 +59,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
     private int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
-    private int markerCount = 0;
+    private int geofenceCount = 0;
     private final String[] choices = {"Home", "Work", "Gym", "Supermarket"};
 
     private ContextHolder contextHolder;
@@ -215,11 +215,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
     }
+   /**
+    *
+   markers count limit
+    https://stackoverflow.com/questions/34106809/allow-only-a-certain-number-of-markers-in-google-maps
+   * */
 
     private void handleMapLongClick(LatLng latLng) {
 
-        if (markerCount < 10) {
-            markerCount = markerCount+ 1;
+        if (geofenceCount < 5) {
+            geofenceCount = geofenceCount+ 1;
 
             addMarker(latLng);
             addCircle(latLng, GEOFENCE_RADIUS);
@@ -229,13 +234,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             new AlertDialog.Builder(this,R.style.AlertDialog_AppCompat_Dialog)
                     .setTitle("Would you like to remove Geofence?")
-                    .setMessage("Only 10 Geofence allowed!")
+                    .setMessage("Only 5 Geofence allowed!")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
 
                             removeGeofence();
                             mMap.clear();
+                            geofenceCount=0;
                         }
                     })
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {

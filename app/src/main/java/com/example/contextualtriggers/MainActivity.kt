@@ -7,12 +7,14 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.BatteryManager
+import android.os.Build
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.util.Log
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,18 +23,16 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.contextualtriggers.context.room_database.DatabaseCreate
 import com.example.contextualtriggers.ui.theme.ContextualTriggersTheme
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.*
-import java.util.jar.Manifest
 
 @AndroidEntryPoint
-
 class MainActivity : ComponentActivity() {
     private var batteryTrigger = false
     private val permission: String = android.Manifest.permission.READ_CALENDAR
@@ -56,7 +56,7 @@ class MainActivity : ComponentActivity() {
         val endDateCol = CalendarContract.Events.DTEND
 
         val projection = arrayOf(titleCol, startDateCol, endDateCol)
-        val selection = CalendarContract.Events.DELETED + " != 1"
+        val selection = CalendarContract.Events.IS_PRIMARY + " == 1"
 
         val cursor = contentResolver.query(
             CalendarContract.Events.CONTENT_URI,
@@ -74,7 +74,10 @@ class MainActivity : ComponentActivity() {
             val startDate = formatter.format(Date(cursor.getLong(startDateColIdx)))
             val endDate = formatter.format(Date(cursor.getLong(endDateColIdx)))
 
-            Log.d("Upcoming Events", "$title $startDate $endDate")
+            if(startDate.subSequence(0, 10).contentEquals(CurrentDate().substring(0, 10))) {
+                Log.d("Upcoming Events", "$startDate ${CurrentDate()}")
+                Log.d("Upcoming Events", "$title $startDate $endDate")
+            }
         }
 
         cursor.close()
@@ -141,5 +144,10 @@ class MainActivity : ComponentActivity() {
             } else
                 batteryTrigger = false
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun CurrentDate(): String {
+        return LocalDate.now().toString()
     }
 }

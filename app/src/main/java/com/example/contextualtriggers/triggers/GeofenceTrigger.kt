@@ -42,7 +42,7 @@ class GeofenceTrigger(base: Context?) : ContextWrapper(base) {
                 .setSmallIcon(com.example.contextualtriggers.R.drawable.ic_launcher_foreground)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setStyle(
-                    NotificationCompat.BigTextStyle().setSummaryText("summary")
+                    NotificationCompat.BigTextStyle().setSummaryText("Geofence")
                         .setBigContentTitle(title).bigText(body)
                 )
                 .setContentIntent(pendingIntent)

@@ -30,6 +30,7 @@ class StepsTrigger(
     }
 
     override suspend fun isTriggered(): Boolean {
+
         mSteps = contextHolder.getSteps()
 //        println("Steps walked today: $mSteps")
 //        val averageSteps = getWeeklyAverage()

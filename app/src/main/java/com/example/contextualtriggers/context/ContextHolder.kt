@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
+import android.util.Log
 import com.example.contextualtriggers.context.room_database.Steps.util.CurrentDate
 import com.example.contextualtriggers.context.room_database.Steps.util.FormatDate
 import com.example.contextualtriggers.context.use_cases.Geofence.GeofenceUseCases
@@ -20,8 +21,18 @@ class ContextHolder constructor(
     private var context: Context = context
     var noMovement = false
     private var batteryTriggerStatus = true
+    var todaysEvents: ArrayList<CalendarEvent>? = null
 
     override fun noMovement(): Boolean = noMovement
+
+    fun nextEvent() {
+        if(todaysEvents.isNullOrEmpty()) {
+            Log.d("Upcoming Events", "No events")
+        }
+        else {
+            Log.d("Upcoming Events", "${todaysEvents!![0].title}")
+        }
+    }
 
     override suspend fun getSteps() : Int {
         val date = CurrentDate()

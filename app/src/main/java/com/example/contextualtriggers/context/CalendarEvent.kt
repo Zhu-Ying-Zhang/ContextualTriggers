@@ -4,9 +4,9 @@ import android.os.Parcel
 import android.os.Parcelable
 
 class CalendarEvent private constructor(`in`: Parcel) : Parcelable {
-    private val title: String? = `in`.readString()
-    private val location: String? = `in`.readString()
-    private val startTime: Long = `in`.readLong()
+    val title: String? = `in`.readString()
+    val startTime: String? = `in`.readString()
+    val endTime: String? = `in`.readString()
 
     override fun describeContents(): Int {
         return 0
@@ -14,8 +14,8 @@ class CalendarEvent private constructor(`in`: Parcel) : Parcelable {
 
     override fun writeToParcel(parcel: Parcel, i: Int) {
         parcel.writeString(title)
-        parcel.writeString(location)
-        parcel.writeLong(startTime)
+        parcel.writeString(startTime)
+        parcel.writeString(endTime)
     }
 
     companion object CREATOR : Parcelable.Creator<CalendarEvent> {

@@ -66,14 +66,11 @@ class ContextUpdateManager: Service() {
         startService(stepCounter)
 
         val calendarData = Intent(this, CalendarData::class.java)
-//        startService(calendarData)
-
         val cal = Calendar.getInstance()
-        val pintent = PendingIntent.getService(this, 0, calendarData, PendingIntent.FLAG_IMMUTABLE)
+        val pendingCalendar = PendingIntent.getService(this, 0, calendarData, PendingIntent.FLAG_IMMUTABLE)
         val alarm = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         Log.d("Main", java.lang.String.valueOf(cal.timeInMillis))
-        //make the alarm goes off every 10 sec (not exact help to save battery life)
-        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.timeInMillis, 10000, pintent)
+        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.timeInMillis, 86400000, pendingCalendar)
     }
 
     override fun onBind(p0: Intent?): IBinder? {

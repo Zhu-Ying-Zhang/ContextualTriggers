@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         requirePermissions()
         registerReceiver(getBatteryLevel, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
         //This is just a test to create the geofence
-         setContent {
+        setContent {
             ContextualTriggersTheme {
                 Scaffold(
                     modifier = Modifier,

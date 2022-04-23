@@ -16,7 +16,7 @@ import com.example.contextualtriggers.context.room_database.Geofence.GeofenceDat
 import com.example.contextualtriggers.context.room_database.Geofence.GeofenceRepoImplementation
 import com.example.contextualtriggers.context.room_database.Steps.StepsDatabase
 import com.example.contextualtriggers.context.room_database.Steps.StepsRepoImplementation
-import com.example.contextualtriggers.context.room_database.Steps.util.CurrentDate
+import com.example.contextualtriggers.context.util.CurrentDate
 import com.example.contextualtriggers.context.use_cases.Geofence.AddGeofence
 import com.example.contextualtriggers.context.use_cases.Geofence.GeofenceUseCases
 import com.example.contextualtriggers.context.use_cases.Geofence.GetGeofence
@@ -66,11 +66,12 @@ class ContextUpdateManager: Service() {
         startService(stepCounter)
 
         val calendarData = Intent(this, CalendarData::class.java)
+        startService(calendarData)
         val cal = Calendar.getInstance()
         val pendingCalendar = PendingIntent.getService(this, 0, calendarData, PendingIntent.FLAG_IMMUTABLE)
         val alarm = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         Log.d("Main", java.lang.String.valueOf(cal.timeInMillis))
-        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.timeInMillis, 86400000, pendingCalendar)
+        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.timeInMillis, 1000, pendingCalendar)
     }
 
     override fun onBind(p0: Intent?): IBinder? {
@@ -102,7 +103,7 @@ class ContextUpdateManager: Service() {
                     val events = intent.getParcelableArrayListExtra<CalendarEvent>("Events")
                     Log.d("ContextUpdate", "Events Updating")
                     contextHolder.todaysEvents = events
-                    contextHolder.nextEvent()
+                    contextHolder.isInEvent()
                 }
             }
             if (triggerManager != null)
@@ -144,38 +145,5 @@ class ContextUpdateManager: Service() {
             .setContentText(title)
             .setContentTitle(message)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-    }
-
-    private fun readCalendarEvents() {
-        Log.d("Upcoming Events", "Reading Calendar Data")
-        val titleCol = CalendarContract.Events.TITLE
-        val startDateCol = CalendarContract.Events.DTSTART
-        val endDateCol = CalendarContract.Events.DTEND
-
-        val projection = arrayOf(titleCol, startDateCol, endDateCol)
-        val selection = CalendarContract.Events.IS_PRIMARY + " == 1"
-
-        val cursor = contentResolver.query(
-            CalendarContract.Events.CONTENT_URI,
-            projection, selection, null, null
-        )
-
-        val titleColIdx = cursor!!.getColumnIndex(titleCol)
-        val startDateColIdx = cursor.getColumnIndex(startDateCol)
-        val endDateColIdx = cursor.getColumnIndex(endDateCol)
-
-        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US)
-
-        while (cursor.moveToNext()) {
-            val title = cursor.getString(titleColIdx)
-            val startDate = formatter.format(Date(cursor.getLong(startDateColIdx)))
-            val endDate = formatter.format(Date(cursor.getLong(endDateColIdx)))
-
-            if (startDate.subSequence(0, 10).contentEquals(CurrentDate().substring(0, 10))) {
-                Log.d("Upcoming Events", "$title $startDate $endDate")
-            }
-        }
-
-        cursor.close()
     }
 }

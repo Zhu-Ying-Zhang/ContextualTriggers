@@ -2,6 +2,8 @@ package com.example.contextualtriggers;
 
 import static android.view.Gravity.CENTER;
 
+import static java.lang.Boolean.TRUE;
+
 import android.Manifest;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
@@ -305,13 +307,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //
 //            Toast.makeText(MapsActivity.this,  "CreateMaker else", Toast.LENGTH_LONG).show();
 
-            MarkerOptions  markerOptions = new MarkerOptions().position(latLng).title(strSpinner);
+        MarkerOptions markerOptions = new MarkerOptions().position(latLng).title(strSpinner).visible(TRUE);
 
-            markerOptions.draggable(true);
-            mMarker =mMap.addMarker(markerOptions);
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-//        }
-//        mMarker.showInfoWindow();
+        markerOptions.draggable(true);
+        mMarker = mMap.addMarker(markerOptions);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        //   }
+        mMarker.showInfoWindow();
     }
 
     /**

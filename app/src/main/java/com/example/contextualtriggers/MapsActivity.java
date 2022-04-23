@@ -32,6 +32,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -59,7 +60,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
     private int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
-
+    private int geofenceCount = 0;
+    private final String[] choices = {"Home", "Work", "Gym"};
+    private Marker mMarker;
     private ContextHolder contextHolder;
 
     @Override
@@ -213,12 +216,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
     }
+   /**
+    *
+   markers count limit
+    https://stackoverflow.com/questions/34106809/allow-only-a-certain-number-of-markers-in-google-maps
+   * */
 
     private void handleMapLongClick(LatLng latLng) {
-//        mMap.clear();
-        addMarker(latLng);
-        addCircle(latLng, GEOFENCE_RADIUS);
-        addGeofence(latLng, GEOFENCE_RADIUS);
+
+        if (geofenceCount < choices.length) {
+
+            geofenceCount = geofenceCount+ 1;
+            addMarker(latLng);
+            addCircle(latLng, GEOFENCE_RADIUS);
+            addGeofence(latLng, GEOFENCE_RADIUS);
+        } else {
+
+            new AlertDialog.Builder(this,R.style.AlertDialog_AppCompat_Dialog)
+                    .setTitle("Would you like to remove Geofence?")
+                    .setMessage("Only "+ choices.length +" Geofence allowed!")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                            removeGeofence();
+                            mMap.clear();
+                            mMarker.remove();
+                            geofenceCount=0;
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    })
+                    .create()
+                    .show();
+        }
+
     }
 
 
@@ -255,12 +291,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
+    public void createMarker(LatLng latLng, String strSpinner) {
+        if (mMap == null) return;
+//        if (mMarker != null) {
+//            //update existing
+//            if (mMarker.getTitle() != strSpinner) {
+//                //update existing
+//              //  mMarker.setPosition(latLng);
+//                Toast.makeText(MapsActivity.this,  "CreateMaker if"+strSpinner, Toast.LENGTH_LONG).show();
+//            }
+//            //mMarker.setPosition(latLng);
+//        } else {
+//
+//            Toast.makeText(MapsActivity.this,  "CreateMaker else", Toast.LENGTH_LONG).show();
+
+            MarkerOptions  markerOptions = new MarkerOptions().position(latLng).title(strSpinner);
+
+            markerOptions.draggable(true);
+            mMarker =mMap.addMarker(markerOptions);
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+//        }
+//        mMarker.showInfoWindow();
+    }
+
     /**
      * Ref: https://android-er.blogspot.com/2015/10/add-marker-to-google-map-google-maps.html
      **/
     private void addMarker(LatLng latLng) {
         if (mMap != null) {
-
             //create custom LinearLayout programmatically
             LinearLayout layout = new LinearLayout(MapsActivity.this);
             layout.setLayoutParams(new LinearLayout.LayoutParams(
@@ -270,7 +328,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             final Spinner spinnerField = new Spinner(MapsActivity.this);
 
-            final String[] choices = {"Home", "Work", "Gym", "Supermarket"};
+
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(MapsActivity.this,
                     android.R.layout.simple_spinner_item, choices);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -278,6 +336,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             spinnerField.setGravity(CENTER);
 
             layout.addView(spinnerField);
+
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.AlertDialog_AppCompat_Dialog);
             builder.setTitle("Please select your Geofence name? ");
@@ -290,11 +349,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     MarkerOptions markerOptions;
                     String strSpinner = spinnerField.getSelectedItem().toString();
+              //  mMarker.setTitle(strSpinner);
+                  //  Toast.makeText(MapsActivity.this, mMarker.getTitle(), Toast.LENGTH_LONG).show();
+                    createMarker(latLng,strSpinner);
 
-                    markerOptions = new MarkerOptions().position(latLng).title(strSpinner);
-                    markerOptions.draggable(true);
-                    mMap.addMarker(markerOptions);
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 }
             });
             builder.setNegativeButton("Cancel", null);
@@ -343,8 +401,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         marker.setAlpha(1.0f);
 
         new AlertDialog.Builder(this,R.style.AlertDialog_AppCompat_Dialog)
-                .setTitle("Remove Geofances")
-                .setMessage("This will remove all geofences")
+                .setTitle("Remove Geofence")
+                .setMessage("This will remove all geofence")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -355,6 +413,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                        }
                         removeGeofence();
                         mMap.clear();
+                        mMarker.remove();
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {

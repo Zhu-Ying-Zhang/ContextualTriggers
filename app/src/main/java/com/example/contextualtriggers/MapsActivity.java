@@ -20,7 +20,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
-import com.example.contextualtriggers.context.ContextHolder;
+import com.example.contextualtriggers.context.ContextState;
 import com.example.contextualtriggers.context.data.GeofenceContext;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
@@ -58,7 +58,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private int geofenceCount = 0;
     private final String[] choices = {"Home", "Work", "Gym"};
     private Marker mMarker;
-    private ContextHolder contextHolder;
+    private ContextState contextState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

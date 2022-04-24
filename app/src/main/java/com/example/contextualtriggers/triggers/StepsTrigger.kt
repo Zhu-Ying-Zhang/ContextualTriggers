@@ -2,13 +2,12 @@ package com.example.contextualtriggers.triggers
 
 import android.content.Intent
 import android.util.Log
-import com.example.contextualtriggers.context.ContextAPI
+import com.example.contextualtriggers.context.ContextInterface
 import com.example.contextualtriggers.context.util.CurrentTime
 import com.example.contextualtriggers.context.util.isNightTime
-import java.util.*
 
 class StepsTrigger(
-    private val contextHolder: ContextAPI,
+    private val contextHolder: ContextInterface,
 ): Trigger {
 
     private val NOTIFICATION_TITLE = "Steps Trigger"

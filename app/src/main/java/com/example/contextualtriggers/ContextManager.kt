@@ -31,7 +31,7 @@ private const val NOTIFICATION_CHANNEL_ID = "Channel_Id"
 
 class ContextUpdateManager: Service() {
 
-    private lateinit var contextHolder: ContextHolder
+    private lateinit var contextState: ContextState
     private lateinit var triggerManager: TriggerManger
 
     override fun onCreate() {
@@ -56,8 +56,8 @@ class ContextUpdateManager: Service() {
             insertSteps = InsertSteps(stepsRepository),
             stepsExist = StepsExist(stepsRepository)
         )
-        contextHolder = ContextHolder(this, geofenceUseCases, stepsUseCases)
-        triggerManager = TriggerManger(this, contextHolder)
+        contextState = ContextState(this, geofenceUseCases, stepsUseCases)
+        triggerManager = TriggerManger(this, contextState)
 
         val stepCounter = Intent(this, StepsData::class.java)
         startService(stepCounter)
@@ -95,37 +95,37 @@ class ContextUpdateManager: Service() {
                     val steps = intent.getIntExtra("Count", 0);
                     if (steps != -1) {
                         GlobalScope.launch {
-                            contextHolder.addSteps(steps)
+                            contextState.addSteps(steps)
                         }
                         print("Updated steps")
                     }
                 } else if (type == "Battery") {
                     val level = intent.getIntExtra("batteryLevel", 0)
                     Log.d("ContextUpdate", level.toString())
-                    contextHolder.batteryLevel = level
-                    contextHolder.changeBatteryTriggerStatus(true)
+                    contextState.batteryLevel = level
+                    contextState.changeBatteryTriggerStatus(true)
                 } else if (type == "Calendar") {
                     val events = intent.getParcelableArrayListExtra<CalendarEvent>("Events")
                     Log.d("ContextUpdate", "Events Updating")
-                    contextHolder.todaysEvents = events
-                    contextHolder.nextEvent()
-                    val test = contextHolder.isInEvent()
+                    contextState.todaysEvents = events
+                    contextState.nextEvent()
+                    val test = contextState.isInEvent()
                     val test2 = isNightTime()
                     Log.d("ContextUpdate", "Event: $test, Night: $test2")
                 } else if (type == "WeatherWithLocation") {
                     val weatherCode = intent.getIntExtra("WeatherCode", 0)
                     Log.d("ContextUpdate", "WeatherWithLocation")
-                    contextHolder.updateWeatherCodeWithLocation(weatherCode)
-                    contextHolder.updateWeatherTriggerStatus(true)
+                    contextState.updateWeatherCodeWithLocation(weatherCode)
+                    contextState.updateWeatherTriggerStatus(true)
                 } else if (type == "WeatherWithAlarm") {
                     val weatherCode = intent.getIntExtra("WeatherCode", 0)
                     Log.d("ContextUpdate", "WeatherWithAlarm")
-                    contextHolder.updateWeatherCodeWithAlarm(weatherCode)
-                    contextHolder.updateWeatherWithAlarmTriggerStatus(true)
+                    contextState.updateWeatherCodeWithAlarm(weatherCode)
+                    contextState.updateWeatherWithAlarmTriggerStatus(true)
                 } else if (type == "Goal") {
                     val steps = intent.getIntExtra("Steps", 0)
                     Log.d("ContextUpdate", "New goal: $steps")
-                    contextHolder.stepsGoal = steps
+                    contextState.stepsGoal = steps
                 }
             }
             if (triggerManager != null)

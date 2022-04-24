@@ -1,7 +1,7 @@
 package com.example.contextualtriggers.triggers
 
 import android.content.Intent
-import com.example.contextualtriggers.context.ContextAPI
+import com.example.contextualtriggers.context.ContextInterface
 import com.example.contextualtriggers.context.util.isNightTime
 
 private const val NOTIFICATION_TITLE = "Current location weather Trigger"
@@ -9,7 +9,7 @@ private const val NOTIFICATION_TEXT_GOOD_WEATHER = "Good weather in your current
 private const val NOTIFICATION_TEXT_BAD_WEATHER = "Bad weather in your current location, maybe back to home and do some exercise!"
 
 class LocationWeatherTrigger(
-    private val contextHolder: ContextAPI
+    private val contextHolder: ContextInterface
 ): Trigger {
     override fun getNotificationTitle(): String = NOTIFICATION_TITLE
 

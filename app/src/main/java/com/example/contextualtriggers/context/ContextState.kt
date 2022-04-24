@@ -9,11 +9,11 @@ import com.example.contextualtriggers.context.use_cases.Geofence.GeofenceUseCase
 import com.example.contextualtriggers.context.use_cases.Steps.StepsUseCases
 import com.example.contextualtriggers.context.util.CurrentDateTime
 
-class ContextHolder constructor(
+class ContextState constructor(
     context: Context,
     private val geofenceUseCases: GeofenceUseCases,
     private val stepsUseCases: StepsUseCases
-): ContextAPI {
+): ContextInterface {
 
     var batteryLevel: Int = 0
     private var context: Context = context

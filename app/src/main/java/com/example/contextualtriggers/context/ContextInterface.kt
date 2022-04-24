@@ -1,6 +1,6 @@
 package com.example.contextualtriggers.context
 
-interface ContextAPI {
+interface ContextInterface {
 
     fun noMovement(): Boolean
 

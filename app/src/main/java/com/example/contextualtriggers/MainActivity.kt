@@ -38,8 +38,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.lang.NumberFormatException
 
 private const val NOTIFICATION_CHANNEL_ID_RUNNING = "Channel_Id"
-private const val NOTIFICATION_CHANNEL_ID_TRIGGER = "Trigger"
+private const val NOTIFICATION_CHANNEL_ID_TRIGGER_WEATHER = "Trigger_Weather"
+private const val NOTIFICATION_CHANNEL_ID_TRIGGER_WEATHER_LOCATION = "Trigger_Weather_Location"
 private const val NOTIFICATION_CHANNEL_ID_TRIGGER_BATTERY = "Trigger_Battery"
+private const val NOTIFICATION_CHANNEL_ID_TRIGGER_STEPS = "Trigger_Steps"
+private const val NOTIFICATION_CHANNEL_ID_TRIGGER_NO_MOVEMENT = "Trigger_No_Movement"
 private const val NOTIFICATION_CHANNEL_ID_ERROR = "Error"
 
 private val REQUIRED_PERMISSIONS = arrayOf(
@@ -214,16 +217,8 @@ class MainActivity : AppCompatActivity() {
 
     private val getBatteryLevel: BroadcastReceiver = object : BroadcastReceiver() {
 
-        var previousCharge = 0
-
         override fun onReceive(context: Context, intent: Intent) {
             val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
-//            if(abs(level - previousCharge) < 10) {
-//                return
-//            }
-//            else {
-//                previousCharge = level
-//            }
             if (level >= 60 && sendIntent) {
                 Log.d("Battery Level", level.toString())
                 sendIntent = false
@@ -243,15 +238,16 @@ class MainActivity : AppCompatActivity() {
             NotificationChannel(
                 NOTIFICATION_CHANNEL_ID_RUNNING,
                 NOTIFICATION_CHANNEL_ID_RUNNING,
+                NotificationManager.IMPORTANCE_HIGH
+            )
+
+        val notificationChannelTriggerWeather =
+            NotificationChannel(
+                NOTIFICATION_CHANNEL_ID_TRIGGER_WEATHER,
+                NOTIFICATION_CHANNEL_ID_TRIGGER_WEATHER,
                 NotificationManager.IMPORTANCE_DEFAULT
             )
 
-        val notificationChannelTrigger =
-            NotificationChannel(
-                NOTIFICATION_CHANNEL_ID_TRIGGER,
-                NOTIFICATION_CHANNEL_ID_TRIGGER,
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
         val notificationChannelError =
             NotificationChannel(
                 NOTIFICATION_CHANNEL_ID_ERROR,
@@ -263,20 +259,51 @@ class MainActivity : AppCompatActivity() {
             NotificationChannel(
                 NOTIFICATION_CHANNEL_ID_TRIGGER_BATTERY,
                 NOTIFICATION_CHANNEL_ID_TRIGGER_BATTERY,
-                NotificationManager.IMPORTANCE_HIGH
+                NotificationManager.IMPORTANCE_DEFAULT
             )
+
+        val notificationChannelTriggerWeatherLocation =
+            NotificationChannel(
+                NOTIFICATION_CHANNEL_ID_TRIGGER_WEATHER_LOCATION,
+                NOTIFICATION_CHANNEL_ID_TRIGGER_WEATHER_LOCATION,
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+
+        val notificationChannelTriggerSteps =
+            NotificationChannel(
+                NOTIFICATION_CHANNEL_ID_TRIGGER_STEPS,
+                NOTIFICATION_CHANNEL_ID_TRIGGER_STEPS,
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+
+        val notificationChannelTriggerNoMovement =
+            NotificationChannel(
+                NOTIFICATION_CHANNEL_ID_TRIGGER_NO_MOVEMENT,
+                NOTIFICATION_CHANNEL_ID_TRIGGER_NO_MOVEMENT,
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+
 
         getSystemService(NotificationManager::class.java)
             .createNotificationChannel(notificationChannelAppRunning)
 
         getSystemService(NotificationManager::class.java)
-            .createNotificationChannel(notificationChannelTrigger)
+            .createNotificationChannel(notificationChannelTriggerWeather)
 
         getSystemService(NotificationManager::class.java)
             .createNotificationChannel(notificationChannelError)
 
         getSystemService(NotificationManager::class.java)
             .createNotificationChannel(notificationChannelTriggerBattery)
+
+        getSystemService(NotificationManager::class.java)
+            .createNotificationChannel(notificationChannelTriggerWeatherLocation)
+
+        getSystemService(NotificationManager::class.java)
+            .createNotificationChannel(notificationChannelTriggerSteps)
+
+        getSystemService(NotificationManager::class.java)
+            .createNotificationChannel(notificationChannelTriggerNoMovement)
     }
 
     override fun onRequestPermissionsResult(

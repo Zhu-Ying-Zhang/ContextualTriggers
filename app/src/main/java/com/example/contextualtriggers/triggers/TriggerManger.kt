@@ -18,22 +18,24 @@ class TriggerManger constructor(
 
     suspend fun check() {
         if (noMovementTrigger.isTriggered())
-            Notification().handleNotification(context, noMovementTrigger)
+            Notification().handleNotification("Trigger_No_Movement", 10000, context, noMovementTrigger)
 
         if (batteryTrigger.isTriggered()) {
             Log.d("TriggerManger", "batteryTrigger")
             Notification().handleNotification("Trigger_Battery", 10001, context, batteryTrigger)
             contextHolder.changeBatteryTriggerStatus(false)
         }
+
         if (locationWeatherTrigger.isTriggered()) {
-            Notification().handleNotification(context, locationWeatherTrigger)
+            Notification().handleNotification("Trigger_Weather_Location", 10002, context, locationWeatherTrigger)
             contextHolder.updateWeatherTriggerStatus(false)
         }
+
         if (stepsTrigger.isTriggered())
-            Notification().handleNotification(context, stepsTrigger)
+            Notification().handleNotification("Trigger_Steps", 10003, context, stepsTrigger)
 
         if (weatherTrigger.isTriggered()) {
-            Notification().handleNotification(context, weatherTrigger)
+            Notification().handleNotification("Trigger_Weather", 10004, context, weatherTrigger)
             contextHolder.updateWeatherWithAlarmTriggerStatus(false)
         }
     }

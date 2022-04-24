@@ -72,7 +72,8 @@
 
         <service android:name=".ContextUpdateManager" />
         <service android:name=".context.StepsData" />
-        <service android:name=".context.WeatherDataSource" />
+        <service android:name=".context.WeatherLocationData" />
+        <service android:name=".context.WeatherData" />
         <service android:name=".context.CalendarData" />
     </application>
 

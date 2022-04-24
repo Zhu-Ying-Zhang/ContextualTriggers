@@ -9,16 +9,6 @@ import com.example.contextualtriggers.triggers.Trigger
 
 class Notification {
 
-    fun handleNotification(context: Context) {
-        sendNotification(
-            context,
-            101,
-            "Trigger",
-            "Hi",
-            "Test"
-        )
-    }
-
     fun handleNotification(context: Context, trigger: Trigger) {
         handleNotification("Trigger", context, trigger)
     }

@@ -13,7 +13,7 @@ class StepsTrigger(
 
     private val NOTIFICATION_TITLE = "Steps Trigger"
 
-    private val NOTIFICATION_TEXT = "Your not on track to meet your daily steps goal, go for a walk" +
+    private val NOTIFICATION_TEXT = "Your not on track to meet your daily goal, go for a walk" +
             "to get a few steps closer! Current steps: "
 
     private var steps = 0

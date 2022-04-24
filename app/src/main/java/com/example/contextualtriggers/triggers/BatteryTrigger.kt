@@ -5,7 +5,7 @@ import com.example.contextualtriggers.context.ContextAPI
 import com.example.contextualtriggers.context.util.isNightTime
 
 private const val NOTIFICATION_TITLE = "Battery Status"
-private const val NOTIFICATION_TEXT = "You have a lot of battery left, you can go for a walk!"
+private const val NOTIFICATION_TEXT = "You have a lot of battery left, you should go for a walk!"
 
 class BatteryTrigger constructor(
     private val contextHolder: ContextAPI,

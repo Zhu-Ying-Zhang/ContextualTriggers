@@ -4,7 +4,7 @@ import android.content.Intent
 import com.example.contextualtriggers.context.ContextAPI
 import com.example.contextualtriggers.context.util.isNightTime
 
-private const val NOTIFICATION_TITLE = "Weather Trigger"
+private const val NOTIFICATION_TITLE = "Weather Update"
 private const val NOTIFICATION_TEXT_GOOD_WEATHER = "It's good weather now, go for a walk!"
 private const val NOTIFICATION_TEXT_BAD_WEATHER = "It's bad weather now, maybe stay at home and do some exercise!"
 

@@ -7,10 +7,6 @@ class StepsRepoImplementation(
     private val dao: StepsDao
 ) : StepsRepository {
 
-    override fun getSteps(): Flow<List<Steps>> {
-        return dao.getSteps()
-    }
-
     override suspend fun getStepByDate(date: String): Steps? {
         return dao.getStepByDate(date)
     }

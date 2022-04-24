@@ -7,9 +7,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface StepsDao {
 
-    @Query("SELECT * FROM steps_tbl")
-    fun getSteps(): Flow<List<Steps>>
-
     @Query("SELECT * FROM steps_tbl WHERE date = :date")
     suspend fun getStepByDate(date: String): Steps?
 

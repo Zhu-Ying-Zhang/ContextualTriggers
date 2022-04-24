@@ -7,9 +7,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface GeofenceDao {
 
-    @Query("SELECT * FROM geofence_tbl")
-    fun getGeofences(): Flow<List<Geofence>>
-
     @Query("SELECT * FROM geofence_tbl WHERE name = :name")
     suspend fun getGeofenceByName(name: String): Geofence?
 

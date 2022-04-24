@@ -5,8 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface StepsRepository {
 
-    fun getSteps(): Flow<List<Steps>>
-
     suspend fun getStepByDate(date: String): Steps?
 
     suspend fun insertSteps(steps: Steps)

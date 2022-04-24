@@ -7,10 +7,6 @@ class GeofenceRepoImplementation (
     private val dao: GeofenceDao
 ) : GeofenceRepository {
 
-    override fun getGeofences(): Flow<List<Geofence>> {
-        return dao.getGeofences()
-    }
-
     override suspend fun getGeofenceByName(name: String): Geofence? {
         return dao.getGeofenceByName(name)
     }

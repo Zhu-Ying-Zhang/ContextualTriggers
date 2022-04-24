@@ -5,8 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface GeofenceRepository {
 
-    fun getGeofences(): Flow<List<Geofence>>
-
     suspend fun getGeofenceByName(name: String): Geofence?
 
     suspend fun insertGeofence(geofence: Geofence)

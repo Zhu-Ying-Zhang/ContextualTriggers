@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.contextualtriggers.context.Geofence
+import com.example.contextualtriggers.context.data.Geofence
 
 @Database(entities = [Geofence::class], version = 3, exportSchema = false)
 abstract class GeofenceDatabase: RoomDatabase() {

@@ -1,6 +1,6 @@
 package com.example.contextualtriggers.context.room_database.Geofence
 
-import com.example.contextualtriggers.context.Geofence
+import com.example.contextualtriggers.context.data.Geofence
 import kotlinx.coroutines.flow.Flow
 
 class GeofenceRepoImplementation (

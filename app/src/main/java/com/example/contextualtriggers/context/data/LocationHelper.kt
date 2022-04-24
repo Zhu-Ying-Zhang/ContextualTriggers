@@ -1,15 +1,12 @@
-package com.example.contextualtriggers.context
+package com.example.contextualtriggers.context.data
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
-import androidx.core.app.ActivityCompat
 
 // 1 min(Will change to 1 hour). The Minimum Time to get location update
 private const val LOCATION_REFRESH_TIME = 60000

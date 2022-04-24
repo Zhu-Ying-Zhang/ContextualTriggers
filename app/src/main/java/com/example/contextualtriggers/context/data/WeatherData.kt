@@ -1,10 +1,8 @@
-package com.example.contextualtriggers.context
+package com.example.contextualtriggers.context.data
 
 import android.app.Service
-import android.content.Context
 import android.content.Intent
 import android.location.Location
-import android.location.LocationManager
 import android.os.IBinder
 import android.util.Log
 import com.android.volley.Request

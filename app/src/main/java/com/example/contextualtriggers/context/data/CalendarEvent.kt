@@ -1,4 +1,4 @@
-package com.example.contextualtriggers.context
+package com.example.contextualtriggers.context.data
 
 import android.os.Parcel
 import android.os.Parcelable

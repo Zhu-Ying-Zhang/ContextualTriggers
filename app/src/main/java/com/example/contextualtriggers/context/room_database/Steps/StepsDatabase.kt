@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.contextualtriggers.context.Steps
+import com.example.contextualtriggers.context.data.Steps
 
 @Database(entities = [Steps::class], version = 3, exportSchema = false)
 abstract class StepsDatabase: RoomDatabase() {

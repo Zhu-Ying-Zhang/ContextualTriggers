@@ -6,24 +6,24 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.IBinder
-import android.provider.CalendarContract
 import android.util.Log
 import com.example.contextualtriggers.context.*
+import com.example.contextualtriggers.context.data.CalendarData
+import com.example.contextualtriggers.context.data.CalendarEvent
+import com.example.contextualtriggers.context.data.StepsData
+import com.example.contextualtriggers.context.data.WeatherData
 import com.example.contextualtriggers.context.room_database.Geofence.GeofenceDatabase
 import com.example.contextualtriggers.context.room_database.Geofence.GeofenceRepoImplementation
 import com.example.contextualtriggers.context.room_database.Steps.StepsDatabase
 import com.example.contextualtriggers.context.room_database.Steps.StepsRepoImplementation
-import com.example.contextualtriggers.context.util.CurrentDate
 import com.example.contextualtriggers.context.use_cases.Geofence.AddGeofence
 import com.example.contextualtriggers.context.use_cases.Geofence.GeofenceUseCases
 import com.example.contextualtriggers.context.use_cases.Geofence.GetGeofence
 import com.example.contextualtriggers.context.use_cases.Steps.*
 import com.example.contextualtriggers.context.util.isNightTime
-import com.example.contextualtriggers.triggers.Trigger
 import com.example.contextualtriggers.triggers.TriggerManger
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.*
 
 private const val NOTIFICATION_ID = 1001
@@ -122,6 +122,10 @@ class ContextUpdateManager: Service() {
                     Log.d("ContextUpdate", "WeatherWithAlarm")
                     contextHolder.updateWeatherCodeWithAlarm(weatherCode)
                     contextHolder.updateWeatherWithAlarmTriggerStatus(true)
+                } else if (type == "Goal") {
+                    val steps = intent.getIntExtra("Steps", 0)
+                    Log.d("ContextUpdate", "New goal: $steps")
+                    contextHolder.stepsGoal = steps
                 }
             }
             if (triggerManager != null)
@@ -144,7 +148,7 @@ class ContextUpdateManager: Service() {
             }
         startForeground(
             NOTIFICATION_ID, sendNotification(
-                "Service is running", "Service enabled"
+                "Context triggers service is running.", "Service enabled."
             ).build()
         )
     }
@@ -164,38 +168,5 @@ class ContextUpdateManager: Service() {
             .setContentText(title)
             .setContentTitle(message)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-    }
-
-    private fun readCalendarEvents() {
-        Log.d("Upcoming Events", "Reading Calendar Data")
-        val titleCol = CalendarContract.Events.TITLE
-        val startDateCol = CalendarContract.Events.DTSTART
-        val endDateCol = CalendarContract.Events.DTEND
-
-        val projection = arrayOf(titleCol, startDateCol, endDateCol)
-        val selection = CalendarContract.Events.IS_PRIMARY + " == 1"
-
-        val cursor = contentResolver.query(
-            CalendarContract.Events.CONTENT_URI,
-            projection, selection, null, null
-        )
-
-        val titleColIdx = cursor!!.getColumnIndex(titleCol)
-        val startDateColIdx = cursor.getColumnIndex(startDateCol)
-        val endDateColIdx = cursor.getColumnIndex(endDateCol)
-
-        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US)
-
-        while (cursor.moveToNext()) {
-            val title = cursor.getString(titleColIdx)
-            val startDate = formatter.format(Date(cursor.getLong(startDateColIdx)))
-            val endDate = formatter.format(Date(cursor.getLong(endDateColIdx)))
-
-            if (startDate.subSequence(0, 10).contentEquals(CurrentDate().substring(0, 10))) {
-                Log.d("Upcoming Events", "$title $startDate $endDate")
-            }
-        }
-
-        cursor.close()
     }
 }

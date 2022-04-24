@@ -10,6 +10,7 @@ import android.content.IntentFilter
 import android.os.BatteryManager
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.*
@@ -30,10 +31,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import com.example.contextualtriggers.context.util.StepsInputField
-import com.example.contextualtriggers.context.WeatherLocationData
+import com.example.contextualtriggers.context.data.WeatherLocationData
 import com.example.contextualtriggers.ui.theme.ContextualTriggersTheme
 import com.tbruyelle.rxpermissions3.RxPermissions
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.NumberFormatException
 
 private const val NOTIFICATION_CHANNEL_ID_RUNNING = "Channel_Id"
 private const val NOTIFICATION_CHANNEL_ID_TRIGGER = "Trigger"
@@ -137,7 +139,7 @@ class MainActivity : AppCompatActivity() {
                     shape = RoundedCornerShape(16.dp),
                     elevation = 3.dp
                 ) {
-                    Column{
+                    Column {
                         Box(
                             modifier = Modifier.padding(16.dp)
                         ) {
@@ -158,11 +160,23 @@ class MainActivity : AppCompatActivity() {
                                 enabled = true,
                                 isSingleLine = true,
                                 onAction = KeyboardActions() {
-
                                     keyboardController?.hide()
                                     focusManager.clearFocus()
                                 }
                             )
+                        }
+                        Box(
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        ) {
+                            Button(
+                                onClick = {
+                                    stepsButton(inputState.value)
+                                    keyboardController?.hide()
+                                    focusManager.clearFocus()
+                                },
+                            ) {
+                                Text(text = "Set Goal")
+                            }
                         }
                         Spacer(Modifier.height(24.dp))
                     }
@@ -171,7 +185,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun geofenceButton() {
+    private fun stepsButton(steps: String) {
+        try {
+            val stepsInt = steps.toInt()
+            val intent = Intent(this, ContextUpdateManager::class.java)
+            intent.putExtra("Data", "Goal")
+            intent.putExtra("Steps", stepsInt)
+            startService(intent)
+        } catch(e: NumberFormatException) {
+            Toast(this).setText("Make sure input is just numbers!")
+        }
+    }
+
+    private fun geofenceButton() {
         val mapActivity = Intent(this, MapsActivity::class.java)
         startActivity(mapActivity)
     }

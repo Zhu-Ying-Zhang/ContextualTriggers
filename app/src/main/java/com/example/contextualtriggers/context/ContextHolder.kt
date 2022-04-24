@@ -2,11 +2,12 @@ package com.example.contextualtriggers.context
 
 import android.content.Context
 import android.util.Log
+import com.example.contextualtriggers.context.data.CalendarEvent
+import com.example.contextualtriggers.context.data.Steps
 import com.example.contextualtriggers.context.util.CurrentDate
 import com.example.contextualtriggers.context.use_cases.Geofence.GeofenceUseCases
 import com.example.contextualtriggers.context.use_cases.Steps.StepsUseCases
 import com.example.contextualtriggers.context.util.CurrentDateTime
-import java.time.format.DateTimeFormatter
 
 class ContextHolder constructor(
     context: Context,
@@ -24,6 +25,8 @@ class ContextHolder constructor(
 
     private var weatherWithAlarm = 0
     private var weatherAlarmTriggerStatus = false
+
+    var stepsGoal: Int = 10000
 
     override fun noMovement(): Boolean = noMovement
 
@@ -61,6 +64,10 @@ class ContextHolder constructor(
         }
     }
 
+    override fun getGoal() : Int {
+        return stepsGoal
+    }
+
     override fun batteryLevel(): Int = batteryLevel
 
     override fun checkBatteryTriggerStatus(): Boolean = batteryTriggerStatus
@@ -74,7 +81,6 @@ class ContextHolder constructor(
             return false
         }
         val currentTime = CurrentDateTime()
-//        Log.d("Time", "$currentTime")
         for(event in todaysEvents!!) {
             if(currentTime > event.startTime!! && currentTime < event.endTime!!)
                 return true

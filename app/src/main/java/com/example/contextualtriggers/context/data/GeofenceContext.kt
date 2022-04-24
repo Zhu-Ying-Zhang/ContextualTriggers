@@ -1,4 +1,4 @@
-package com.example.contextualtriggers.context
+package com.example.contextualtriggers.context.data
 
 import android.app.PendingIntent
 import android.content.Context

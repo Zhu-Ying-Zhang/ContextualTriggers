@@ -1,7 +1,7 @@
 package com.example.contextualtriggers.context.room_database.Steps
 
 import androidx.room.*
-import com.example.contextualtriggers.context.Steps
+import com.example.contextualtriggers.context.data.Steps
 import kotlinx.coroutines.flow.Flow
 
 @Dao

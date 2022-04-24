@@ -71,10 +71,10 @@
         </receiver>
 
         <service android:name=".ContextUpdateManager" />
-        <service android:name=".context.StepsData" />
-        <service android:name=".context.WeatherLocationData" />
-        <service android:name=".context.WeatherData" />
-        <service android:name=".context.CalendarData" />
+        <service android:name=".context.data.StepsData" />
+        <service android:name=".context.data.WeatherLocationData" />
+        <service android:name=".context.data.WeatherData" />
+        <service android:name=".context.data.CalendarData" />
     </application>
 
 </manifest>

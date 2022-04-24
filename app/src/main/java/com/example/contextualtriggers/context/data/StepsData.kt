@@ -12,11 +12,9 @@ import com.example.contextualtriggers.ContextUpdateManager
 
 
 class StepsData : Service(), SensorEventListener {
-    /**
-     * The total number of steps walked since booting.
-     */
-    private var mTotalStepsSinceBoot = 0
-    private var mFirstLoad = true
+    private var stepsSinceBoot = 0
+    private var first = true
+
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         Log.d("ContextTrigger", "Steps service...")
         var intent = intent
@@ -43,13 +41,13 @@ class StepsData : Service(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent) {
         val steps = event.values[0].toInt()
         Log.d("ContextTriggers", "New steps: $steps")
-        if (mFirstLoad) {
-            mTotalStepsSinceBoot = steps
-            mFirstLoad = false
+        if (first) {
+            stepsSinceBoot = steps
+            first = false
         } else {
-            val diff = steps - mTotalStepsSinceBoot
+            val diff = steps - stepsSinceBoot
             if (diff > THRESHOLD) {
-                mTotalStepsSinceBoot = steps
+                stepsSinceBoot = steps
                 val intent = Intent(this, ContextUpdateManager::class.java)
                 intent.putExtra("Data", "Steps")
                 intent.putExtra("Count", diff)
@@ -61,11 +59,6 @@ class StepsData : Service(), SensorEventListener {
     override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
 
     companion object {
-        private const val TAG = "StepCounter"
-
-        /**
-         * The number of steps to be walked for the counter to send an intent.
-         */
-        private const val THRESHOLD = 10
+        private const val THRESHOLD = 100
     }
 }

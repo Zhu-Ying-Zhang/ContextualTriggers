@@ -17,9 +17,9 @@ class BootBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         Log.d("ContextTriggers", "System booted")
 
-        val i = Intent(context, MainActivity::class.java)
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        context.startActivity(i)
+//        val i = Intent(context, MainActivity::class.java)
+//        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//        context.startActivity(i)
 
         val geofenceTrigger = GeofenceTrigger(context)
 

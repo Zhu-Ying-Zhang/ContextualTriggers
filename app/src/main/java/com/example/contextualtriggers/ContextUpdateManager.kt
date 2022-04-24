@@ -108,6 +108,10 @@ class ContextUpdateManager: Service() {
                     val test = contextHolder.isInEvent()
                     val test2 = isNightTime()
                     Log.d("ContextUpdate", "Event: $test, Night: $test2")
+                } else if (type == "Goal") {
+                    val steps = intent.getIntExtra("Steps", 0)
+                    Log.d("ContextUpdate", "New goal: $steps")
+                    contextHolder.stepsGoal = steps
                 }
             }
             if (triggerManager != null)

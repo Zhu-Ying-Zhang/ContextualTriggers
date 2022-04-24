@@ -19,6 +19,7 @@ class ContextHolder constructor(
     var noMovement = false
     private var batteryTriggerStatus = true
     var todaysEvents: ArrayList<CalendarEvent>? = null
+    var stepsGoal: Int = 10000
 
     override fun noMovement(): Boolean = noMovement
 
@@ -56,6 +57,10 @@ class ContextHolder constructor(
         }
     }
 
+    override fun getGoal() : Int {
+        return stepsGoal
+    }
+
     override fun batteryLevel(): Int = batteryLevel
 
     override fun checkBatteryTriggerStatus(): Boolean = batteryTriggerStatus
@@ -69,7 +74,6 @@ class ContextHolder constructor(
             return false
         }
         val currentTime = CurrentDateTime()
-//        Log.d("Time", "$currentTime")
         for(event in todaysEvents!!) {
             if(currentTime > event.startTime!! && currentTime < event.endTime!!)
                 return true

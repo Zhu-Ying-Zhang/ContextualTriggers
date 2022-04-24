@@ -12,9 +12,9 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 
 // 1 min(Will change to 1 hour). The Minimum Time to get location update
-private const val LOCATION_REFRESH_TIME = 3000
+private const val LOCATION_REFRESH_TIME = 60000
 // 500 meters. The Minimum Distance to be changed to get location update
-private const val LOCATION_REFRESH_DISTANCE = 500
+private const val LOCATION_REFRESH_DISTANCE = 1000
 
 class LocationHelper {
 

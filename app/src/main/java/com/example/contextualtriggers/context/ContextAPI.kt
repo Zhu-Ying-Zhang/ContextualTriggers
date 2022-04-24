@@ -13,4 +13,12 @@ interface ContextAPI {
     fun checkBatteryTriggerStatus(): Boolean
 
     fun changeBatteryTriggerStatus(status: Boolean)
+
+    fun updateWeatherCodeWithLocation(weatherCode: Int)
+
+    fun checkWeatherCodeWithLocation(): Int
+
+    fun updateWeatherTriggerStatus(status: Boolean)
+
+    fun checkWeatherTriggerStatus(): Boolean
 }

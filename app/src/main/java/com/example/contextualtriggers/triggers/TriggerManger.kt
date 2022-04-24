@@ -9,9 +9,10 @@ class TriggerManger constructor(
     private val contextHolder: ContextHolder
 ) {
 
-    private val noMovementTrigger = NoMovementTrigger(contextHolder = contextHolder)
-    private val stepsTrigger = StepsTrigger(contextHolder = contextHolder)
-    private val batteryTrigger = BatteryTrigger(contextHolder = contextHolder)
+    private val noMovementTrigger: Trigger = NoMovementTrigger(contextHolder = contextHolder)
+    private val stepsTrigger: Trigger = StepsTrigger(contextHolder = contextHolder)
+    private val batteryTrigger: Trigger = BatteryTrigger(contextHolder = contextHolder)
+    private val locationWeatherTrigger: Trigger = LocationWeatherTrigger(contextHolder = contextHolder)
 
     suspend fun check() {
         if (noMovementTrigger.isTriggered())
@@ -20,7 +21,11 @@ class TriggerManger constructor(
             Notification().handleNotification("Trigger_Battery", 10001, context, batteryTrigger)
             contextHolder.changeBatteryTriggerStatus(false)
         }
-        if (stepsTrigger.isTriggered())
-            Notification().handleNotification(context, stepsTrigger)
+        if (locationWeatherTrigger.isTriggered()) {
+            Notification().handleNotification(context, locationWeatherTrigger)
+            contextHolder.updateWeatherTriggerStatus(false)
+        }
+//        if (stepsTrigger.isTriggered())
+//            Notification().handleNotification(context, stepsTrigger)
     }
 }

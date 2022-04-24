@@ -20,8 +20,10 @@ class ContextHolder constructor(
     var batteryLevel: Int = 0
     private var context: Context = context
     var noMovement = false
-    private var batteryTriggerStatus = true
+    private var batteryTriggerStatus = false
     var todaysEvents: ArrayList<CalendarEvent>? = null
+    private var weatherWithLocation = 0
+    private var weatherTriggerStatus = false
 
     override fun noMovement(): Boolean = noMovement
 
@@ -66,4 +68,18 @@ class ContextHolder constructor(
     override fun changeBatteryTriggerStatus(status: Boolean) {
         batteryTriggerStatus = status
     }
+
+    override fun updateWeatherCodeWithLocation(weatherCode: Int) {
+        weatherWithLocation = weatherCode
+    }
+
+    override fun checkWeatherCodeWithLocation(): Int = weatherWithLocation
+
+    override fun updateWeatherTriggerStatus(status: Boolean) {
+        Log.d("checkWeatherTriggerStatus-Before", weatherTriggerStatus.toString())
+        weatherTriggerStatus = status
+        Log.d("checkWeatherTriggerStatus-After", weatherTriggerStatus.toString())
+    }
+
+    override fun checkWeatherTriggerStatus(): Boolean = weatherTriggerStatus
 }

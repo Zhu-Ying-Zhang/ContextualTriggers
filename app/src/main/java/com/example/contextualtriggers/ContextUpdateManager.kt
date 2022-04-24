@@ -8,10 +8,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.provider.CalendarContract
 import android.util.Log
-import com.example.contextualtriggers.context.CalendarData
-import com.example.contextualtriggers.context.CalendarEvent
-import com.example.contextualtriggers.context.ContextHolder
-import com.example.contextualtriggers.context.StepsData
+import com.example.contextualtriggers.context.*
 import com.example.contextualtriggers.context.room_database.Geofence.GeofenceDatabase
 import com.example.contextualtriggers.context.room_database.Geofence.GeofenceRepoImplementation
 import com.example.contextualtriggers.context.room_database.Steps.StepsDatabase
@@ -35,7 +32,6 @@ class ContextUpdateManager: Service() {
 
     private lateinit var contextHolder: ContextHolder
     private lateinit var triggerManager: TriggerManger
-    private lateinit var batteryTrigger: Trigger
 
     override fun onCreate() {
         Log.d("ContextTrigger", "Creating context manager...")
@@ -70,7 +66,13 @@ class ContextUpdateManager: Service() {
         val pendingCalendar = PendingIntent.getService(this, 0, calendarData, PendingIntent.FLAG_IMMUTABLE)
         val alarm = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         Log.d("Main", java.lang.String.valueOf(cal.timeInMillis))
-        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.timeInMillis, 86400000, pendingCalendar)
+        //86400000
+        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.timeInMillis, 1000, pendingCalendar)
+
+        val weatherData = Intent(this, WeatherData::class.java)
+        val pendingWeather = PendingIntent.getService(this, 1, weatherData, PendingIntent.FLAG_IMMUTABLE)
+        //10
+        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.timeInMillis, 2500, pendingWeather)
     }
 
     override fun onBind(p0: Intent?): IBinder? {
@@ -86,6 +88,7 @@ class ContextUpdateManager: Service() {
             if (intent.hasExtra("Data")) {
                 // saving data received from datasource
                 val type = intent.getStringExtra("Data")
+                Log.d("ContextUpdate - type", type!!)
                 if(type == "Steps") {
                     val steps = intent.getIntExtra("Count", 0);
                     if (steps != -1) {
@@ -103,10 +106,16 @@ class ContextUpdateManager: Service() {
                     Log.d("ContextUpdate", "Events Updating")
                     contextHolder.todaysEvents = events
                     contextHolder.nextEvent()
+                } else if (type == "WeatherWithLocation") {
+                    val weatherCode = intent.getIntExtra("WeatherCode", 0)
+                    Log.d("ContextUpdate", "WeatherWithLocation")
+                    contextHolder.updateWeatherCodeWithLocation(weatherCode)
+                    contextHolder.updateWeatherTriggerStatus(true)
                 }
             }
             if (triggerManager != null)
                 GlobalScope.launch {
+                    Log.d("triggerManager-Launch", "Checking..")
                     triggerManager.check()
                 }
         }

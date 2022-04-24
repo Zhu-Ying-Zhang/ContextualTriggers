@@ -8,12 +8,13 @@ import android.util.Log
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.contextualtriggers.ContextUpdateManager
 import com.example.contextualtriggers.Notification
 import org.json.JSONObject
 
-private const val TAG = "WeatherData"
+private const val TAG = "WeatherLocationData"
 
-class WeatherDataSource: Service() {
+class WeatherLocationData: Service() {
     private var weatherUrl = ""
     private var apiId = "084075e7553a4b0f967ed5dbe97be187"
 
@@ -24,25 +25,26 @@ class WeatherDataSource: Service() {
         Log.d(TAG, "onCreate")
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-        Log.d(TAG, "WeatherDataSource --> onStartCommand")
+        Log.d(TAG, "WeatherLocationData --> onStartCommand")
+        val intent = Intent(this, ContextUpdateManager::class.java)
         LocationHelper().startListeningUserLocation(
             this, object : MyLocationListener {
                 override fun onLocationChanged(location: Location?) {
                     mLocation = location
                     mLocation?.let {
-                        Log.d(TAG, "WeatherDataSource --> mLocation")
+                        Log.d(TAG, "WeatherLocationData --> mLocation")
                         weatherUrl = "https://api.weatherbit.io/v2.0/current?lat="+ location?.latitude +"&lon=" + location?.longitude + "&key="+ apiId
                         Log.d(TAG, weatherUrl)
-                        getWeatherData()
+                        getWeatherData(intent)
                     }
                 }
             })
         return START_STICKY
     }
 
-    private fun getWeatherData() {
+    private fun getWeatherData(intent: Intent) {
         val queue = Volley.newRequestQueue(this)
         val url: String = weatherUrl
         val stringReq = StringRequest(
@@ -50,10 +52,11 @@ class WeatherDataSource: Service() {
             { response ->
                 Log.d(TAG, response.toString())
                 val obj = JSONObject(response)
-                val arr = obj.getJSONArray("data")
-                Log.d(TAG, arr.toString())
-                val obj2 = arr.getJSONObject(0)
-                Log.d(TAG, obj2.toString())
+                val data = obj.getJSONArray("data").getJSONObject(0).getJSONObject("weather")
+                Log.d(TAG, data.toString())
+                intent.putExtra("Data", "WeatherWithLocation")
+                intent.putExtra("WeatherCode", 600)
+                startService(intent)
             }, {
                 Log.d(TAG, "Error...")
                 Notification().handleNotification(

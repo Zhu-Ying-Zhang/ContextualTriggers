@@ -25,7 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.contextualtriggers.context.WeatherDataSource
+import com.example.contextualtriggers.context.WeatherLocationData
 import com.example.contextualtriggers.ui.theme.ContextualTriggersTheme
 import com.tbruyelle.rxpermissions3.RxPermissions
 import dagger.hilt.android.AndroidEntryPoint
@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         unregisterReceiver(getBatteryLevel)
         val intent = Intent(this, ContextUpdateManager::class.java)
         stopService(intent)
-        val weather = Intent(this, WeatherDataSource::class.java)
+        val weather = Intent(this, WeatherLocationData::class.java)
         stopService(weather)
     }
 
@@ -173,8 +173,8 @@ class MainActivity : AppCompatActivity() {
         if (permissions.contentEquals(REQUIRED_PERMISSIONS)) {
             if (Manifest.permission.ACCESS_FINE_LOCATION in permissions){
                 if (grantResults[permissions.indexOf(Manifest.permission.ACCESS_FINE_LOCATION)] == 0) {
-                    val weather = Intent(this, WeatherDataSource::class.java)
-                    startService(weather)
+//                    val weather = Intent(this, WeatherData::class.java)
+//                    startService(weather)
                 }
             }
         }
@@ -187,6 +187,11 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.READ_CALENDAR
             )
             .subscribe { permission ->
+                if (permission.granted) {
+                    Log.d("requirePermissions", "permission.granted")
+                    val weather = Intent(this, WeatherLocationData::class.java)
+                    startService(weather)
+                }
                 if (!permission.granted) {
                     ActivityCompat.requestPermissions(
                         this,

@@ -16,11 +16,12 @@ import com.example.contextualtriggers.context.room_database.Geofence.GeofenceDat
 import com.example.contextualtriggers.context.room_database.Geofence.GeofenceRepoImplementation
 import com.example.contextualtriggers.context.room_database.Steps.StepsDatabase
 import com.example.contextualtriggers.context.room_database.Steps.StepsRepoImplementation
-import com.example.contextualtriggers.context.room_database.Steps.util.CurrentDate
+import com.example.contextualtriggers.context.util.CurrentDate
 import com.example.contextualtriggers.context.use_cases.Geofence.AddGeofence
 import com.example.contextualtriggers.context.use_cases.Geofence.GeofenceUseCases
 import com.example.contextualtriggers.context.use_cases.Geofence.GetGeofence
 import com.example.contextualtriggers.context.use_cases.Steps.*
+import com.example.contextualtriggers.context.util.isNightTime
 import com.example.contextualtriggers.triggers.Trigger
 import com.example.contextualtriggers.triggers.TriggerManger
 import kotlinx.coroutines.GlobalScope
@@ -66,11 +67,12 @@ class ContextUpdateManager: Service() {
         startService(stepCounter)
 
         val calendarData = Intent(this, CalendarData::class.java)
+        startService(calendarData)
         val cal = Calendar.getInstance()
         val pendingCalendar = PendingIntent.getService(this, 0, calendarData, PendingIntent.FLAG_IMMUTABLE)
         val alarm = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         Log.d("Main", java.lang.String.valueOf(cal.timeInMillis))
-        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.timeInMillis, 86400000, pendingCalendar)
+        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.timeInMillis, 10000, pendingCalendar)
     }
 
     override fun onBind(p0: Intent?): IBinder? {
@@ -103,6 +105,9 @@ class ContextUpdateManager: Service() {
                     Log.d("ContextUpdate", "Events Updating")
                     contextHolder.todaysEvents = events
                     contextHolder.nextEvent()
+                    val test = contextHolder.isInEvent()
+                    val test2 = isNightTime()
+                    Log.d("ContextUpdate", "Event: $test, Night: $test2")
                 }
             }
             if (triggerManager != null)

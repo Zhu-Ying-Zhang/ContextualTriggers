@@ -1,16 +1,13 @@
 package com.example.contextualtriggers
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import android.os.BatteryManager
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
@@ -24,7 +21,6 @@ import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.example.contextualtriggers.context.WeatherDataSource
 import com.example.contextualtriggers.ui.theme.ContextualTriggersTheme
 import com.tbruyelle.rxpermissions3.RxPermissions
@@ -71,8 +67,6 @@ class MainActivity : AppCompatActivity() {
                         ) {
                             Text(text = "Add Geofence mainactivity")
                         }
-
-//                        DatabaseCreate()
                     }
                 }
             }

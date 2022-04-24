@@ -2,6 +2,7 @@ package com.example.contextualtriggers.triggers
 
 import android.content.Intent
 import com.example.contextualtriggers.context.ContextAPI
+import com.example.contextualtriggers.context.util.isNightTime
 import java.util.*
 
 class StepsTrigger(
@@ -30,7 +31,8 @@ class StepsTrigger(
     }
 
     override suspend fun isTriggered(): Boolean {
-
+        if(contextHolder.isInEvent() || isNightTime())
+            return false
         mSteps = contextHolder.getSteps()
 //        println("Steps walked today: $mSteps")
 //        val averageSteps = getWeeklyAverage()

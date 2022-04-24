@@ -1,15 +1,12 @@
 package com.example.contextualtriggers.context
 
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.os.BatteryManager
 import android.util.Log
-import com.example.contextualtriggers.context.room_database.Steps.util.CurrentDate
-import com.example.contextualtriggers.context.room_database.Steps.util.FormatDate
+import com.example.contextualtriggers.context.util.CurrentDate
 import com.example.contextualtriggers.context.use_cases.Geofence.GeofenceUseCases
 import com.example.contextualtriggers.context.use_cases.Steps.StepsUseCases
-import javax.inject.Inject
+import com.example.contextualtriggers.context.util.CurrentDateTime
+import java.time.format.DateTimeFormatter
 
 class ContextHolder constructor(
     context: Context,
@@ -65,5 +62,18 @@ class ContextHolder constructor(
 
     override fun changeBatteryTriggerStatus(status: Boolean) {
         batteryTriggerStatus = status
+    }
+
+    override fun isInEvent(): Boolean {
+        if(todaysEvents.isNullOrEmpty()) {
+            return false
+        }
+        val currentTime = CurrentDateTime()
+        Log.d("Time", "$currentTime")
+        for(event in todaysEvents!!) {
+            if(currentTime > event.startTime!! && currentTime < event.endTime!!)
+                return true
+        }
+        return false
     }
 }

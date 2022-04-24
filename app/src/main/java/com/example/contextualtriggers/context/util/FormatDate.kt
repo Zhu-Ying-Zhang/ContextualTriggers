@@ -1,4 +1,4 @@
-package com.example.contextualtriggers.context.room_database.Steps.util
+package com.example.contextualtriggers.context.util
 
 import android.os.Build
 import android.util.Log

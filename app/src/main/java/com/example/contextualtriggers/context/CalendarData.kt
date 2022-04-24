@@ -7,7 +7,7 @@ import android.os.Parcel
 import android.provider.CalendarContract
 import android.util.Log
 import com.example.contextualtriggers.ContextUpdateManager
-import com.example.contextualtriggers.context.room_database.Steps.util.CurrentDate
+import com.example.contextualtriggers.context.util.CurrentDate
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList

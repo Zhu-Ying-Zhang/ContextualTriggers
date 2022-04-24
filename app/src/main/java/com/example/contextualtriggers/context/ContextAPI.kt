@@ -13,4 +13,6 @@ interface ContextAPI {
     fun checkBatteryTriggerStatus(): Boolean
 
     fun changeBatteryTriggerStatus(status: Boolean)
+
+    fun isInEvent(): Boolean
 }

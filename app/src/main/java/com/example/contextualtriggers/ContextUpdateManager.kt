@@ -69,12 +69,12 @@ class ContextUpdateManager: Service() {
         val alarm = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         Log.d("Main", java.lang.String.valueOf(cal.timeInMillis))
         //21600000
-        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.timeInMillis, 1000, pendingCalendar)
+        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.timeInMillis, 21600000, pendingCalendar)
 
         val weatherData = Intent(this, WeatherData::class.java)
         val pendingWeather = PendingIntent.getService(this, 1, weatherData, PendingIntent.FLAG_IMMUTABLE)
         //21600000
-        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.timeInMillis, 1000, pendingWeather)
+        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.timeInMillis, 21600000, pendingWeather)
     }
 
     override fun onBind(p0: Intent?): IBinder? {
@@ -158,7 +158,7 @@ class ContextUpdateManager: Service() {
             NotificationChannel(
                 NOTIFICATION_CHANNEL_ID,
                 NOTIFICATION_CHANNEL_ID,
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_HIGH
             )
 
         getSystemService(NotificationManager::class.java)

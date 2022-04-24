@@ -13,18 +13,26 @@ import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.material.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import com.example.contextualtriggers.context.WeatherDataSource
+import com.example.contextualtriggers.context.util.StepsInputField
 import com.example.contextualtriggers.ui.theme.ContextualTriggersTheme
 import com.tbruyelle.rxpermissions3.RxPermissions
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,56 +57,120 @@ class MainActivity : AppCompatActivity() {
         createNotificationChannel()
         requirePermissions()
         registerReceiver(getBatteryLevel, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-        //This is just a test to create the geofence
+        // Start the ContentUpdateManager service
+        val intent = Intent(this, ContextUpdateManager::class.java)
+        startForegroundService(intent)
+
+        // Setup screen
          setContent {
             ContextualTriggersTheme {
-                Scaffold(
-                    modifier = Modifier,
+                createSetupScreen()
+            }
+        }
+
+//        finish()
+    }
+
+    @OptIn(ExperimentalComposeUiApi::class)
+    @Composable
+    fun createSetupScreen() {
+        val keyboardController = LocalSoftwareKeyboardController.current
+        val inputState = remember{
+            mutableStateOf("")
+        }
+        val focusRequester = remember { FocusRequester() }
+        val focusManager = LocalFocusManager.current
+
+        Scaffold(
+            modifier = Modifier,
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
+            ) {
+                Box(
+                    modifier = Modifier.align(Alignment.Start)
                 ) {
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Top
+                        modifier = Modifier.padding(2.dp)
                     ) {
+                        Text(
+                            text = "Initial Setup",
+                            style = MaterialTheme.typography.h5,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Spacer(Modifier.height(16.dp))
+                    }
+                }
+                Card(
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .padding(bottom = 12.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    elevation = 3.dp
+                ) {
+                    Column{
                         Box(
-                            modifier = Modifier.align(Alignment.Start)
+                            modifier = Modifier.padding(16.dp)
                         ) {
-                            Column(
-                                modifier = Modifier.padding(2.dp)
-                            ) {
-                                Text(
-                                    text = "Initial Setup",
-                                    style = MaterialTheme.typography.h5,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                                Spacer(Modifier.height(16.dp))
-                                Box(
-                                    modifier = Modifier.padding(8.dp)
-                                ) {
-                                    Text(text = "Please set your Home and Work locations for better " +
-                                            "notifications:")
-                                }
-                            }
+                            Text(text = "Please set locations for your Home, Work & Gym " +
+                                    "(optional).\n\n" +
+                                    "This will allow for improved notifications!")
                         }
                         Spacer(Modifier.height(8.dp))
                         Button(
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
                             onClick = { geofenceButton()
                             },
                         ) {
                             Text(text = "Add Significant Locations")
                         }
+                        Spacer(Modifier.height(24.dp))
+                    }
+                }
+                Spacer(Modifier.height(0.dp))
+                Card(
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .padding(bottom = 12.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    elevation = 3.dp
+                ) {
+                    Column{
+                        Box(
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Text(text = "Set your daily steps goal here:")
+                        }
+                        Box(
+                            modifier = Modifier
+                                .padding(start = 16.dp, end = 16.dp)
+                                .padding()
+                        ) {
+                            StepsInputField(
+                                modifier = Modifier.focusRequester(focusRequester),
+                                value = inputState.value,
+                                onValueChange = {
+                                    inputState.value = it
+                                },
+                                labelId = "Enter steps",
+                                enabled = true,
+                                isSingleLine = true,
+                                onAction = KeyboardActions() {
+
+                                    keyboardController?.hide()
+                                    focusManager.clearFocus()
+                                }
+                            )
+                        }
+                        Spacer(Modifier.height(24.dp))
                     }
                 }
             }
         }
-
-        //Start the ContentUpdateManager service
-        val intent = Intent(this, ContextUpdateManager::class.java)
-        startForegroundService(intent)
-
-//        finish()
     }
 
     fun geofenceButton() {

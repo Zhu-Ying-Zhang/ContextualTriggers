@@ -69,7 +69,7 @@ class ContextHolder constructor(
             return false
         }
         val currentTime = CurrentDateTime()
-        Log.d("Time", "$currentTime")
+//        Log.d("Time", "$currentTime")
         for(event in todaysEvents!!) {
             if(currentTime > event.startTime!! && currentTime < event.endTime!!)
                 return true

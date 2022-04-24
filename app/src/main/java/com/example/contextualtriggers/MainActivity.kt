@@ -12,14 +12,17 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import com.example.contextualtriggers.context.WeatherDataSource
 import com.example.contextualtriggers.ui.theme.ContextualTriggersTheme
@@ -54,18 +57,37 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     Column(
                         modifier = Modifier
-                            .fillMaxSize(),
+                            .fillMaxSize()
+                            .padding(16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                        verticalArrangement = Arrangement.Top
                     ) {
-
-                        Text(text = "Running...")
-
+                        Box(
+                            modifier = Modifier.align(Alignment.Start)
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(2.dp)
+                            ) {
+                                Text(
+                                    text = "Initial Setup",
+                                    style = MaterialTheme.typography.h5,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                                Spacer(Modifier.height(16.dp))
+                                Box(
+                                    modifier = Modifier.padding(8.dp)
+                                ) {
+                                    Text(text = "Please set your Home and Work locations for better " +
+                                            "notifications:")
+                                }
+                            }
+                        }
+                        Spacer(Modifier.height(8.dp))
                         Button(
                             onClick = { geofenceButton()
                             },
                         ) {
-                            Text(text = "Add Geofence mainactivity")
+                            Text(text = "Add Significant Locations")
                         }
                     }
                 }

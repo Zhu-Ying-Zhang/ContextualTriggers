@@ -25,6 +25,9 @@ class ContextHolder constructor(
     private var weatherWithLocation = 0
     private var weatherTriggerStatus = false
 
+    private var weatherWithAlarm = 0
+    private var weatherAlarmTriggerStatus = false
+
     override fun noMovement(): Boolean = noMovement
 
     fun nextEvent() {
@@ -82,4 +85,16 @@ class ContextHolder constructor(
     }
 
     override fun checkWeatherTriggerStatus(): Boolean = weatherTriggerStatus
+
+    override fun updateWeatherCodeWithAlarm(weatherCode: Int) {
+        weatherWithAlarm = weatherCode
+    }
+
+    override fun checkWeatherCodeWithAlarm(): Int = weatherWithAlarm
+
+    override fun updateWeatherWithAlarmTriggerStatus(status: Boolean) {
+        weatherAlarmTriggerStatus = status
+    }
+
+    override fun checkWeatherWithAlarmTriggerStatus(): Boolean = weatherAlarmTriggerStatus
 }

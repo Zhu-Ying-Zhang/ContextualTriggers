@@ -38,7 +38,7 @@ class StepsTrigger(
 //        val estimation = getEstimation(mSteps)
 //        println("Estimation: $estimation")
 //        return estimation < TARGET_STEPS
-        return true
+        return false
     }
 
     /**

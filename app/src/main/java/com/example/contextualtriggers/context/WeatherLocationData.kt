@@ -55,7 +55,7 @@ class WeatherLocationData: Service() {
                 val data = obj.getJSONArray("data").getJSONObject(0).getJSONObject("weather")
                 Log.d(TAG, data.toString())
                 intent.putExtra("Data", "WeatherWithLocation")
-                intent.putExtra("WeatherCode", 600)
+                intent.putExtra("WeatherCode", data.getInt("code"))
                 startService(intent)
             }, {
                 Log.d(TAG, "Error...")

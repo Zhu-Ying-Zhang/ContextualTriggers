@@ -21,4 +21,12 @@ interface ContextAPI {
     fun updateWeatherTriggerStatus(status: Boolean)
 
     fun checkWeatherTriggerStatus(): Boolean
+
+    fun updateWeatherCodeWithAlarm(weatherCode: Int)
+
+    fun checkWeatherCodeWithAlarm(): Int
+
+    fun updateWeatherWithAlarmTriggerStatus(status: Boolean)
+
+    fun checkWeatherWithAlarmTriggerStatus(): Boolean
 }

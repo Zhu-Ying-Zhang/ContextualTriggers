@@ -38,12 +38,13 @@ private const val NOTIFICATION_CHANNEL_ID_ERROR = "Error"
 
 private val REQUIRED_PERMISSIONS = arrayOf(
     Manifest.permission.ACCESS_FINE_LOCATION,
+    Manifest.permission.ACCESS_COARSE_LOCATION,
     Manifest.permission.READ_CALENDAR,
 )
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
+    var sendIntent = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("ContextTriggers", "Application started")
@@ -106,17 +107,23 @@ class MainActivity : AppCompatActivity() {
 
         override fun onReceive(context: Context, intent: Intent) {
             val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
-            if(abs(level - previousCharge) < 10) {
-                return
+//            if(abs(level - previousCharge) < 10) {
+//                return
+//            }
+//            else {
+//                previousCharge = level
+//            }
+            if (level >= 60 && sendIntent) {
+                Log.d("Battery Level", level.toString())
+                sendIntent = false
+                val intent = Intent(context, ContextUpdateManager::class.java)
+                intent.putExtra("Data", "Battery")
+                intent.putExtra("batteryLevel", level)
+                startService(intent)
+            } else if (level < 60) {
+                Log.d("Battery Level", "Not send intent")
+                sendIntent = true
             }
-            else {
-                previousCharge = level
-            }
-            Log.d("Battery Level", level.toString())
-            val intent = Intent(context, ContextUpdateManager::class.java)
-            intent.putExtra("Data", "Battery")
-            intent.putExtra("batteryLevel", level)
-            startService(intent)
         }
     }
 

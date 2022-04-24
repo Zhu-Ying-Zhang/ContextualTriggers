@@ -66,13 +66,13 @@ class ContextUpdateManager: Service() {
         val pendingCalendar = PendingIntent.getService(this, 0, calendarData, PendingIntent.FLAG_IMMUTABLE)
         val alarm = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         Log.d("Main", java.lang.String.valueOf(cal.timeInMillis))
-        //86400000
+        //21600000
         alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.timeInMillis, 1000, pendingCalendar)
 
         val weatherData = Intent(this, WeatherData::class.java)
         val pendingWeather = PendingIntent.getService(this, 1, weatherData, PendingIntent.FLAG_IMMUTABLE)
-        //10
-        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.timeInMillis, 2500, pendingWeather)
+        //21600000
+        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.timeInMillis, 1000, pendingWeather)
     }
 
     override fun onBind(p0: Intent?): IBinder? {
@@ -101,6 +101,7 @@ class ContextUpdateManager: Service() {
                     val level = intent.getIntExtra("batteryLevel", 0)
                     Log.d("ContextUpdate", level.toString())
                     contextHolder.batteryLevel = level
+                    contextHolder.changeBatteryTriggerStatus(true)
                 } else if (type == "Calendar") {
                     val events = intent.getParcelableArrayListExtra<CalendarEvent>("Events")
                     Log.d("ContextUpdate", "Events Updating")
@@ -111,6 +112,11 @@ class ContextUpdateManager: Service() {
                     Log.d("ContextUpdate", "WeatherWithLocation")
                     contextHolder.updateWeatherCodeWithLocation(weatherCode)
                     contextHolder.updateWeatherTriggerStatus(true)
+                } else if (type == "WeatherWithAlarm") {
+                    val weatherCode = intent.getIntExtra("WeatherCode", 0)
+                    Log.d("ContextUpdate", "WeatherWithAlarm")
+                    contextHolder.updateWeatherCodeWithAlarm(weatherCode)
+                    contextHolder.updateWeatherWithAlarmTriggerStatus(true)
                 }
             }
             if (triggerManager != null)
